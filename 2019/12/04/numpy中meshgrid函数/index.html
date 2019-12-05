@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hans">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
@@ -12,7 +12,7 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Lato:300,300italic,400,400italic,700,700italic|PingFang SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
 
 
@@ -33,26 +33,27 @@
     lazyload: false,
     pangu: false,
     algolia: {
-      appID: '',
-      apiKey: '',
-      indexName: '',
+      appID: 'YQWVT5TBW9',
+      apiKey: 'c2e8e95e326e549b98d7b21074d18c4a',
+      indexName: 'blog_search',
       hits: {"per_page":10},
       labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
     },
     localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
-    path: '',
+    path: 'search.xml',
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
   };
 </script>
 
   <meta name="description" content="numpy中meshgrid函数 先来看官方文档： https:&#x2F;&#x2F;docs.scipy.org&#x2F;doc&#x2F;numpy&#x2F;reference&#x2F;generated&#x2F;numpy.meshgrid.html功能：从一个坐标向量中返回一个坐标矩阵参数：    x1，x2，x3：一维的数组代表网格的坐标 indexing：{‘xy’,’ij’}，笛卡尔坐标’xy’或者矩阵’ij’下标作为输出，默认是笛卡尔坐标">
+<meta name="keywords" content="python,numpy,数据分析">
 <meta property="og:type" content="article">
 <meta property="og:title" content="numpy中meshgrid函数">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;04&#x2F;numpy%E4%B8%ADmeshgrid%E5%87%BD%E6%95%B0&#x2F;index.html">
 <meta property="og:site_name" content="Easter&#39;s blog">
 <meta property="og:description" content="numpy中meshgrid函数 先来看官方文档： https:&#x2F;&#x2F;docs.scipy.org&#x2F;doc&#x2F;numpy&#x2F;reference&#x2F;generated&#x2F;numpy.meshgrid.html功能：从一个坐标向量中返回一个坐标矩阵参数：    x1，x2，x3：一维的数组代表网格的坐标 indexing：{‘xy’,’ij’}，笛卡尔坐标’xy’或者矩阵’ij’下标作为输出，默认是笛卡尔坐标">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-22T08:11:34.155Z">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-12-05T03:19:34.241Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://yoursite.com/2019/12/04/numpy%E4%B8%ADmeshgrid%E5%87%BD%E6%95%B0/">
@@ -121,7 +122,7 @@
   </div>
 
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Navigationsleiste an/ausschalten">
+    <div class="toggle" aria-label="切换导航栏">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -135,17 +136,58 @@
   <ul id="menu" class="menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Startseite</a>
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archiv</a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 
 </nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input" id="search-input"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+  
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
 </div>
     </header>
 
@@ -168,7 +210,7 @@
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/04/numpy%E4%B8%ADmeshgrid%E5%87%BD%E6%95%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -190,17 +232,34 @@
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              <span class="post-meta-item-text">Veröffentlicht am</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Erstellt: 2019-12-04 18:41:38" itemprop="dateCreated datePublished" datetime="2019-12-04T18:41:38+08:00">2019-12-04</time>
+              <time title="创建时间：2019-12-04 22:44:02" itemprop="dateCreated datePublished" datetime="2019-12-04T22:44:02+08:00">2019-12-04</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                <span class="post-meta-item-text">Bearbeitet am</span>
-                <time title="Geändert am: 2019-11-22 16:11:34" itemprop="dateModified" datetime="2019-11-22T16:11:34+08:00">2019-11-22</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-12-05 11:19:34" itemprop="dateModified" datetime="2019-12-05T11:19:34+08:00">2019-12-05</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/numpy/" itemprop="url" rel="index">
+                    <span itemprop="name">numpy</span>
+                  </a>
+                </span>
+            </span>
 
           
 
@@ -222,6 +281,8 @@
 <li>copy： bool类型，如果是False，返回一个原始数组的视图保存在内存中，默认是True。如果，sparse和copy都为False，将有可能返回一个不连续的数组。而且，如果广播数组的元素超过一个，可以使用一个独立的内存。如果想要对这个数组进行写操作，请先拷贝这个数组。 </li>
 </ul>
 <p>看完官方文档之后还是一脸懵逼？？？？直接上例子解释</p>
+<a id="more"></a>
+
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">1</span>]: nx,ny = (<span class="number">3</span>,<span class="number">2</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">4</span>]: x = np.linspace(<span class="number">1</span>,<span class="number">2</span>,nx) <span class="comment"># [1,1.5,2]</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">6</span>]: y = np.linspace(<span class="number">1</span>,<span class="number">2</span>,ny) <span class="comment"># [1,2]</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">7</span>]: xv,yv = np.meshgrid(x,y)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">10</span>]: xv</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">Out[<span class="number">10</span>]:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">array([[<span class="number">1.</span> , <span class="number">1.5</span>, <span class="number">2.</span> ],</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">       [<span class="number">1.</span> , <span class="number">1.5</span>, <span class="number">2.</span> ]])</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">11</span>]: yv</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">Out[<span class="number">11</span>]:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">array([[<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">       [<span class="number">2.</span>, <span class="number">2.</span>, <span class="number">2.</span>]])</span></pre></td></tr></table></figure>
 
 <p>上面的例子可以看出是将两个输入的数组进行拓展，前一个拓展与后一个有关，后一个拓展与前一个有关。前一个是竖轴拓展，后一个是横轴拓展。  </p>
@@ -241,6 +302,11 @@
     
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/numpy/" rel="tag"># numpy</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          </div>
 
         
 
@@ -248,8 +314,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/12/04/hello-world/" rel="prev" title="Hello World">
-      <i class="fa fa-chevron-left"></i> Hello World
+    <a href="/2019/12/04/numpy%20average%E4%B8%8Emean%E5%8C%BA%E5%88%AB,/" rel="prev" title="numpy average与mean区别">
+      <i class="fa fa-chevron-left"></i> numpy average与mean区别
     </a></div>
       <div class="post-nav-item"></div>
     </div>
@@ -280,10 +346,10 @@
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
-          Inhaltsverzeichnis
+          文章目录
         </li>
         <li class="sidebar-nav-overview">
-          Übersicht
+          站点概览
         </li>
       </ul>
 
@@ -303,8 +369,20 @@
           <a href="/archives/">
         
           <span class="site-state-item-count">2</span>
-          <span class="site-state-item-name">Artikel</span>
+          <span class="site-state-item-name">日志</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
@@ -334,10 +412,10 @@
   </span>
   <span class="author" itemprop="copyrightHolder">warren</span>
 </div>
-  <div class="powered-by">Erstellt mit  <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
   </div>
   <span class="post-meta-divider">|</span>
-  <div class="theme-info">Design – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.6.0
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.6.0
   </div>
 
         
@@ -366,6 +444,11 @@
   
 
 
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.css">
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.js"></script><script src="/js/algolia-search.js"></script>
 
 
 

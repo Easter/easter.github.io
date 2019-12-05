@@ -45,28 +45,32 @@
   };
 </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Easter&#39;s blog">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;index.html">
+  <meta name="description" content="numpy average与mean区别,这里看几个小例子 1In [5]: df &#x3D; pd.DataFrame(&amp;#123;&amp;apos;data1&amp;apos;:np.random.randn(8),&amp;apos;data2&amp;apos;:np.random.randn(8)&amp;#125;)23In [6]: df4Out[6]:5      data1     data260 -0.904163  1.26676971  0.349836">
+<meta name="keywords" content="python,numpy,数据分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="numpy average与mean区别">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;04&#x2F;numpy%20average%E4%B8%8Emean%E5%8C%BA%E5%88%AB,&#x2F;index.html">
 <meta property="og:site_name" content="Easter&#39;s blog">
+<meta property="og:description" content="numpy average与mean区别,这里看几个小例子 1In [5]: df &#x3D; pd.DataFrame(&amp;#123;&amp;apos;data1&amp;apos;:np.random.randn(8),&amp;apos;data2&amp;apos;:np.random.randn(8)&amp;#125;)23In [6]: df4Out[6]:5      data1     data260 -0.904163  1.26676971  0.349836">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-12-05T03:32:30.633Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/">
+<link rel="canonical" href="http://yoursite.com/2019/12/04/numpy%20average%E4%B8%8Emean%E5%8C%BA%E5%88%AB,/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome: true,
-    isPost: false,
+    isHome: false,
+    isPost: true,
     isPage: false,
     isArchive: false
   };
 </script>
 
-  <title>Easter's blog</title>
+  <title>numpy average与mean区别 | Easter's blog</title>
   
 
 
@@ -203,107 +207,10 @@
             
 
   <div class="posts-expand">
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/04/numpy%E4%B8%ADmeshgrid%E5%87%BD%E6%95%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="warren">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Easter's blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/12/04/numpy%E4%B8%ADmeshgrid%E5%87%BD%E6%95%B0/" class="post-title-link" itemprop="url">numpy中meshgrid函数</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-12-04 22:44:02" itemprop="dateCreated datePublished" datetime="2019-12-04T22:44:02+08:00">2019-12-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-12-05 11:19:34" itemprop="dateModified" datetime="2019-12-05T11:19:34+08:00">2019-12-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/numpy/" itemprop="url" rel="index">
-                    <span itemprop="name">numpy</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
       
-          <p>numpy中meshgrid函数</p>
-<p>先来看官方文档：<br> <a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.meshgrid.html" target="_blank" rel="noopener">https://docs.scipy.org/doc/numpy/reference/generated/numpy.meshgrid.html</a><br>功能：从一个坐标向量中返回一个坐标矩阵<br>参数：  </p>
-<ul>
-<li>x1，x2，x3：一维的数组代表网格的坐标</li>
-<li>indexing：{‘xy’,’ij’}，笛卡尔坐标’xy’或者矩阵’ij’下标作为输出，默认是笛卡尔坐标</li>
-<li>sparse：bool类型，如果是True，返回一个稀疏矩阵保存在内存中，默认为False</li>
-<li>copy： bool类型，如果是False，返回一个原始数组的视图保存在内存中，默认是True。如果，sparse和copy都为False，将有可能返回一个不连续的数组。而且，如果广播数组的元素超过一个，可以使用一个独立的内存。如果想要对这个数组进行写操作，请先拷贝这个数组。 </li>
-</ul>
-<p>看完官方文档之后还是一脸懵逼？？？？直接上例子解释</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/12/04/numpy%E4%B8%ADmeshgrid%E5%87%BD%E6%95%B0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
   
   
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/04/numpy%20average%E4%B8%8Emean%E5%8C%BA%E5%88%AB,/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -317,8 +224,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/12/04/numpy%20average%E4%B8%8Emean%E5%8C%BA%E5%88%AB,/" class="post-title-link" itemprop="url">numpy average与mean区别</a>
+          numpy average与mean区别
         </h1>
 
         <div class="post-meta">
@@ -366,36 +272,63 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><strong>numpy average与mean区别,</strong><br>这里看几个小例子</p>
+        <p><strong>numpy average与mean区别,</strong><br>这里看几个小例子</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">5</span>]: df = pd.DataFrame(&#123;<span class="string">'data1'</span>:np.random.randn(<span class="number">8</span>),<span class="string">'data2'</span>:np.random.randn(<span class="number">8</span>)&#125;)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">6</span>]: df</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">Out[<span class="number">6</span>]:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">      data1     data2</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="number">0</span> <span class="number">-0.904163</span>  <span class="number">1.266769</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>  <span class="number">0.349836</span>  <span class="number">0.372943</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="number">2</span> <span class="number">-0.140213</span> <span class="number">-1.850433</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"><span class="number">3</span>  <span class="number">0.159576</span> <span class="number">-0.712505</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="number">4</span> <span class="number">-0.133263</span> <span class="number">-0.710342</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"><span class="number">5</span> <span class="number">-0.426558</span>  <span class="number">2.569380</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line"><span class="number">6</span> <span class="number">-0.478641</span> <span class="number">-0.912875</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line"><span class="number">7</span> <span class="number">-0.159328</span>  <span class="number">0.988578</span></span></pre></td></tr></table></figure>
 
 <p>在不传入axis的情况下，对df分别进行average()与mean()运算</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/12/04/numpy%20average%E4%B8%8Emean%E5%8C%BA%E5%88%AB,/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">In [10]: np.average(df)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">Out[10]: -0.04507746461893059</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">In [12]: np.mean(df)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">Out[12]:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">data1   -0.216594</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">data2    0.126439</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">dtype: float64</span></pre></td></tr></table></figure>
+
+<p>可见np.average方法是对整体取平均值，而np.mean()是默认axis=0的情况下求平均值<br>且两个函数返回的数据类型不同，np.average()返回array数组，而np.mean()返回的是Series类型</p>
+<p>在传入axis为0情况下，对df分别进行average()与mean()运算</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">11</span>]: np.average(df,<span class="number">0</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">Out[<span class="number">11</span>]: array([<span class="number">-0.</span>In [<span class="number">13</span>]: np.mean(df,<span class="number">0</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">13</span>]: np.mean(df,<span class="number">0</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">Out[<span class="number">13</span>]:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">data1   <span class="number">-0.216594</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">data2    <span class="number">0.126439</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">dtype: float64</span></pre></td></tr></table></figure>
+
+<p>可见，两个函数返回数据一样，但类型不一样</p>
+<blockquote>
+<p>在axis等于1的情况下，结果与上例相似，在此不举例</p>
+</blockquote>
+<p>除此之外<strong>average还可以计算加权平均值</strong></p>
+<p>什么是加权品均值，这里举个例子</p>
+<p>a = [1,2,3,4,5]，b=[2,3,4,5,6]</p>
+<p>以b为权重取a的加权平均值结果就是</p>
+<p>1*2 + 2*3 + 3*4 + 4*5 + 5*6/2 + 3 + 4 + 5 + 6</p>
+<p>所以这里还是举上面的df为例，取以data2为权重data1的加权平均值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">17</span>]: np.average(df[<span class="string">'data1'</span>],weights=df[<span class="string">'data2'</span>])</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">Out[<span class="number">17</span>]: <span class="number">-1.572923774192011</span></span></pre></td></tr></table></figure>
+
+<p>得出结果</p>
+
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/numpy/" rel="tag"># numpy</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/04/numpy%E4%B8%ADmeshgrid%E5%87%BD%E6%95%B0/" rel="next" title="numpy中meshgrid函数">
+      numpy中meshgrid函数 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
       </footer>
+    
   </article>
   
   
   
 
   </div>
-
-  
-
 
 
           </div>

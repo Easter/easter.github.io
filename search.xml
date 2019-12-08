@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>numpy中transpose，T， swapaxes 方法</title>
+    <title>numpy中transpose,T,swapaxes 方法</title>
     <url>/2019/12/08/numpy%E4%B8%ADtranspose%EF%BC%8CT%EF%BC%8C-swapaxes-%E6%96%B9%E6%B3%95/</url>
     <content><![CDATA[<p>搞懂 numpy 置换方法transpose，T， swapaxes  </p>
 <p><strong>transpose函数</strong></p>

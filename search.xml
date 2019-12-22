@@ -6,6 +6,8 @@
     <content><![CDATA[<blockquote>
 <p>new和make都可以用来分配空间，初始化类型，但是他们确有不同</p>
 </blockquote>
+<a id="more"></a>
+
 <h4 id="new-int-返回的是将T初始化零值之后T类型的指针"><a href="#new-int-返回的是将T初始化零值之后T类型的指针" class="headerlink" title="new(int)返回的是将T初始化零值之后T类型的指针"></a>new(int)返回的是将T初始化零值之后T类型的指针</h4><p>new(T)分配一个T类型的空间并初始化为T类型的零值，返回T类型变量的指针<br>例如  </p>
 <figure class="highlight go"><table><tr><td class="code"><pre><span class="line">p := <span class="built_in">new</span>(<span class="keyword">int</span>)</span></pre></td></tr></table></figure>
 
@@ -160,8 +162,8 @@
         <category>算法</category>
       </categories>
       <tags>
-        <tag>查找</tag>
         <tag>python</tag>
+        <tag>查找</tag>
       </tags>
   </entry>
   <entry>

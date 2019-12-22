@@ -45,18 +45,20 @@
   };
 </script>
 
-  <meta name="description" content="numpy中meshgrid函数 先来看官方文档： https:&#x2F;&#x2F;docs.scipy.org&#x2F;doc&#x2F;numpy&#x2F;reference&#x2F;generated&#x2F;numpy.meshgrid.html功能：从一个坐标向量中返回一个坐标矩阵参数：    x1，x2，x3：一维的数组代表网格的坐标 indexing：{‘xy’,’ij’}，笛卡尔坐标’xy’或者矩阵’ij’下标作为输出，默认是笛卡尔坐标">
-<meta name="keywords" content="python,numpy,数据分析">
+  <meta name="description" content="不管是在pandas还是在numpy中，axis作为一个参数都是一个很重要的存在。但有时我们会纠结于axis到底是作用于行还是列中。这里我们就来理解axis到底是如何定义的。">
+<meta name="keywords" content="python,pandas">
 <meta property="og:type" content="article">
-<meta property="og:title" content="numpy中meshgrid函数">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;04&#x2F;numpy%E4%B8%ADmeshgrid%E5%87%BD%E6%95%B0&#x2F;index.html">
+<meta property="og:title" content="理解pandas中axis">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;22&#x2F;%E7%90%86%E8%A7%A3pandas%E4%B8%ADaxis&#x2F;index.html">
 <meta property="og:site_name" content="Easter&#39;s blog">
-<meta property="og:description" content="numpy中meshgrid函数 先来看官方文档： https:&#x2F;&#x2F;docs.scipy.org&#x2F;doc&#x2F;numpy&#x2F;reference&#x2F;generated&#x2F;numpy.meshgrid.html功能：从一个坐标向量中返回一个坐标矩阵参数：    x1，x2，x3：一维的数组代表网格的坐标 indexing：{‘xy’,’ij’}，笛卡尔坐标’xy’或者矩阵’ij’下标作为输出，默认是笛卡尔坐标">
+<meta property="og:description" content="不管是在pandas还是在numpy中，axis作为一个参数都是一个很重要的存在。但有时我们会纠结于axis到底是作用于行还是列中。这里我们就来理解axis到底是如何定义的。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-12-16T12:31:47.446Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;22&#x2F;%E7%90%86%E8%A7%A3pandas%E4%B8%ADaxis&#x2F;images&#x2F;%E7%9F%A9%E9%98%B5%E8%BD%B4.png">
+<meta property="og:updated_time" content="2019-12-22T07:07:40.646Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;22&#x2F;%E7%90%86%E8%A7%A3pandas%E4%B8%ADaxis&#x2F;images&#x2F;%E7%9F%A9%E9%98%B5%E8%BD%B4.png">
 
-<link rel="canonical" href="http://yoursite.com/2019/12/04/numpy%E4%B8%ADmeshgrid%E5%87%BD%E6%95%B0/">
+<link rel="canonical" href="http://yoursite.com/2019/12/22/%E7%90%86%E8%A7%A3pandas%E4%B8%ADaxis/">
 
 
 <script id="page-configurations">
@@ -70,7 +72,7 @@
   };
 </script>
 
-  <title>numpy中meshgrid函数 | Easter's blog</title>
+  <title>理解pandas中axis | Easter's blog</title>
   
 
 
@@ -211,7 +213,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/04/numpy%E4%B8%ADmeshgrid%E5%87%BD%E6%95%B0/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/22/%E7%90%86%E8%A7%A3pandas%E4%B8%ADaxis/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/logo.jpg">
@@ -224,7 +226,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          numpy中meshgrid函数
+          理解pandas中axis
         </h1>
 
         <div class="post-meta">
@@ -233,16 +235,10 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2019-12-04 22:44:02" itemprop="dateCreated datePublished" datetime="2019-12-04T22:44:02+08:00">2019-12-04</time>
+              <time title="创建时间：2019-12-22 14:52:42 / 修改时间：15:07:40" itemprop="dateCreated datePublished" datetime="2019-12-22T14:52:42+08:00">2019-12-22</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-12-16 20:31:47" itemprop="dateModified" datetime="2019-12-16T20:31:47+08:00">2019-12-16</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -255,8 +251,8 @@
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/numpy/" itemprop="url" rel="index">
-                    <span itemprop="name">numpy</span>
+                  <a href="/categories/python/pandas/" itemprop="url" rel="index">
+                    <span itemprop="name">pandas</span>
                   </a>
                 </span>
             </span>
@@ -272,28 +268,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>numpy中meshgrid函数</p>
-<p>先来看官方文档：<br> <a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.meshgrid.html" target="_blank" rel="noopener">https://docs.scipy.org/doc/numpy/reference/generated/numpy.meshgrid.html</a><br>功能：从一个坐标向量中返回一个坐标矩阵<br>参数：  </p>
-<ul>
-<li>x1，x2，x3：一维的数组代表网格的坐标</li>
-<li>indexing：{‘xy’,’ij’}，笛卡尔坐标’xy’或者矩阵’ij’下标作为输出，默认是笛卡尔坐标</li>
-<li>sparse：bool类型，如果是True，返回一个稀疏矩阵保存在内存中，默认为False</li>
-<li>copy： bool类型，如果是False，返回一个原始数组的视图保存在内存中，默认是True。如果，sparse和copy都为False，将有可能返回一个不连续的数组。而且，如果广播数组的元素超过一个，可以使用一个独立的内存。如果想要对这个数组进行写操作，请先拷贝这个数组。 </li>
-</ul>
-<p>看完官方文档之后还是一脸懵逼？？？？直接上例子解释</p>
+        <blockquote>
+<p>不管是在pandas还是在numpy中，axis作为一个参数都是一个很重要的存在。但有时我们会纠结于axis到底是作用于行还是列中。这里我们就来理解axis到底是如何定义的。</p>
+</blockquote>
 <a id="more"></a>
 
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">1</span>]: nx,ny = (<span class="number">3</span>,<span class="number">2</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">4</span>]: x = np.linspace(<span class="number">1</span>,<span class="number">2</span>,nx) <span class="comment"># [1,1.5,2]</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">6</span>]: y = np.linspace(<span class="number">1</span>,<span class="number">2</span>,ny) <span class="comment"># [1,2]</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">7</span>]: xv,yv = np.meshgrid(x,y)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">10</span>]: xv</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">Out[<span class="number">10</span>]:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">array([[<span class="number">1.</span> , <span class="number">1.5</span>, <span class="number">2.</span> ],</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">       [<span class="number">1.</span> , <span class="number">1.5</span>, <span class="number">2.</span> ]])</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">11</span>]: yv</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">Out[<span class="number">11</span>]:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">array([[<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">       [<span class="number">2.</span>, <span class="number">2.</span>, <span class="number">2.</span>]])</span></pre></td></tr></table></figure>
+<p>python中的axis到底是如何定义的。为0/1时是代表行还是列？<br>我们用以下代码做示例    </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">df=pd.DataFrame(np.random.rand(<span class="number">12</span>).reshape(<span class="number">4</span>,<span class="number">-1</span>),index=list(<span class="string">'abcd'</span>),columns=list(<span class="string">'ABC'</span>))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="string">'''</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="string">out:</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="string">          A         B         C</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="string">a  0.931192  0.306019  0.990724</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="string">b  0.342723  0.174033  0.799012</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"><span class="string">c  0.809201  0.566531  0.135429</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="string">d  0.068132  0.739093  0.610740</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"><span class="string">out end;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line"><span class="string">'''</span></span></pre></td></tr></table></figure>
 
-<p>上面的例子可以看出是将两个输入的数组进行拓展，前一个拓展与后一个有关，后一个拓展与前一个有关。前一个是竖轴拓展，后一个是横轴拓展。  </p>
-<p>因为 y 的长度为2，所以 x 竖向被拓展成原来的两倍。同理，y被拓展成横向的三倍 ，输入由原来的数组变成了矩阵，下面我们来看一下表格矩阵的坐标：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">1</span>]: xv.ravel()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">Out[<span class="number">1</span>]:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">array([<span class="number">1.</span>,<span class="number">1.5</span>,<span class="number">2.</span>,<span class="number">1.</span>,<span class="number">1.5</span>,<span class="number">2.</span>])</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">2</span>]: yv.ravel()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">Out[<span class="number">2</span>]:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">array([<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">2.</span>, <span class="number">2.</span>, <span class="number">2.</span>])</span></pre></td></tr></table></figure>
+<p>这里我们先创建了一个DataFrame，现在使用drop方法丢弃掉其中一列，使用axis为1的情况  </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">df.drop(<span class="string">'A'</span>,axis=<span class="number">1</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="string">'''</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="string">out:</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="string">          B         C</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="string">a  0.306019  0.990724</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="string">b  0.174033  0.799012</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="string">c  0.566531  0.135429</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="string">d  0.739093  0.610740</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"><span class="string">out end;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="string">'''</span></span></pre></td></tr></table></figure>
 
-<p>ravel函数的作用是将矩阵变成一个一维的数组，其中xv.ravel()表示x轴的坐标，yv.ravel()表示y轴的坐标，我们将x轴与y轴的坐标一一对应，就形成了一个网格的坐标  </p>
-<p>如果将sparse参数设置为True，就不会向上面一样拓展了，它产生的网格不是所有的坐标，只有网格对角线上的坐标。  </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">1</span>]: xv,yv = np.meshgrid(x,y,sparse=<span class="literal">True</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">2</span>]: xv</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">Out[<span class="number">2</span>]:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">array([[<span class="number">1.</span> , <span class="number">1.5</span>, <span class="number">2.</span> ]])</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: yv</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">Out[<span class="number">3</span>]:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">array([[<span class="number">1.</span>],</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">       [<span class="number">2.</span>]])</span></pre></td></tr></table></figure>
+<p>可以看到A列已经被删除了，在这里axis作用于列。    </p>
+<p>现在我们调用mean(1)求均值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">df.mean(axis=<span class="number">1</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="string">'''</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="string">out:</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="string">a    0.742645</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="string">b    0.438589</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="string">c    0.503720</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="string">d    0.472655</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="string">dtype: float64</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"><span class="string">out end;</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="string">'''</span></span></pre></td></tr></table></figure>
 
-<p>补充，这里的数组参数也可以是3个，相应的会产生3个矩阵。实践出真知，最好还是实践一下</p>
+<p>对于上面的例子来说，当axis为1时却求出了每一行的均值。  </p>
+<blockquote>
+<p>现在我们来看一下官方帮助的解释：</p>
+</blockquote>
+<p><strong>轴用来为超过一维的数组定义的属性，二维数组拥有两个轴，第0轴沿着行垂直往下。第一轴沿着列的水平方向延申</strong></p>
+<p>用图片来解释就是下图。浅显易懂</p>
+<p><img src="images/%E7%9F%A9%E9%98%B5%E8%BD%B4.png" alt=""></p>
+<p><strong>注意官方使用纵轴和横轴和来解释0和1，而轴是有方向的。所以不要用行和列的思维去解释行和列。因为行和列是没有方向的</strong><br>有了上面的理解之后，我们就可以解释为什么mean(1)时求出的是每一行的平均值了<br>其实是沿着从左到右的方向（也就是上面我们提到的横轴）求出平均值，并不是我们所误解的每一行求平均值。<br> 作用在drop()上时，也是横向发生变化，体现在列的值减少</p>
 
     </div>
 
@@ -304,8 +301,7 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/python/" rel="tag"># python</a>
-              <a href="/tags/numpy/" rel="tag"># numpy</a>
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+              <a href="/tags/pandas/" rel="tag"># pandas</a>
           </div>
 
         
@@ -313,10 +309,13 @@
 
         
     <div class="post-nav">
-      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2019/12/04/numpy%20average%E4%B8%8Emean%E5%8C%BA%E5%88%AB,/" rel="next" title="numpy average与mean区别">
-      numpy average与mean区别 <i class="fa fa-chevron-right"></i>
+    <a href="/2019/12/22/numpy-random%E4%B8%AD%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97/" rel="prev" title="numpy.random中常用模块">
+      <i class="fa fa-chevron-left"></i> numpy.random中常用模块
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/22/go%E8%AF%AD%E8%A8%80-make%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/" rel="next" title="go语言 make和new的区别">
+      go语言 make和new的区别 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>

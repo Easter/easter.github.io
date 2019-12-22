@@ -1,6 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>go语言 make和new的区别</title>
+    <url>/2019/12/22/go%E8%AF%AD%E8%A8%80-make%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+    <content><![CDATA[<blockquote>
+<p>new和make都可以用来分配空间，初始化类型，但是他们确有不同</p>
+</blockquote>
+<h4 id="new-int-返回的是将T初始化零值之后T类型的指针"><a href="#new-int-返回的是将T初始化零值之后T类型的指针" class="headerlink" title="new(int)返回的是将T初始化零值之后T类型的指针"></a>new(int)返回的是将T初始化零值之后T类型的指针</h4><p>new(T)分配一个T类型的空间并初始化为T类型的零值，返回T类型变量的指针<br>例如  </p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">p := <span class="built_in">new</span>(<span class="keyword">int</span>)</span></pre></td></tr></table></figure>
+
+<p>上面代码中p和下面的代码第三行的p是等价的  </p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> p *<span class="keyword">int</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">i := <span class="number">0</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">p = &amp;i</span></pre></td></tr></table></figure>
+
+<p>new(int)将分配的空间初始化为int的零值即为0，并返回int的指针  </p>
+<h4 id="make只能用于slice-map-channel"><a href="#make只能用于slice-map-channel" class="headerlink" title="make只能用于slice,map,channel"></a>make只能用于slice,map,channel</h4><p>make只能用于slice，map，channel三种类型，make(T,args)返回的是初始化之后T类型的值，这个值是经过初始化之后T的引用，而不是指针*T，也不是T类型的零值  </p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> s []<span class="keyword">int</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> s == <span class="literal">nil</span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    fmt.Printf(<span class="string">"s is nil ---&gt;%v\n"</span>,s) <span class="comment">// []int(nil)</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>上述代码表示slice的零值是nil</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line">s := <span class="built_in">make</span>([]<span class="keyword">int</span>,<span class="number">3</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> s == <span class="literal">nil</span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    fmt.Printf(<span class="string">"s is nil---&gt;%v\n"</span>,s)</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;<span class="keyword">else</span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    fmt.Printf(<span class="string">"s is not nil ---&gt;%v\n"</span>,s) <span class="comment">// []int&#123;0,0,0&#125;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>使用make之后的slice是一个初始化的slice，即slice的长度，宽度，底层指向的array都被make完成初始化，此时slice内容被Int的零值填充，形式是[0,0,0]，map和channel也是类似的。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> c1 <span class="keyword">chan</span> <span class="keyword">string</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> c1 == <span class="literal">nil</span> &#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    fmt.Printf(<span class="string">"c1 is nil --&gt; %#v \n "</span>, c1) <span class="comment">//(chan string)(nil)</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">c2 := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">string</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> c2 == <span class="literal">nil</span> &#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    fmt.Printf(<span class="string">"c2 is nil --&gt; %#v \n "</span>, c2)</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125; <span class="keyword">else</span> &#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    fmt.Printf(<span class="string">"c2 is not nill --&gt; %#v \n "</span>, c2)<span class="comment">//(chan string)(0xc420016120)</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<h5 id="make-T-args-返回的是T的引用"><a href="#make-T-args-返回的是T的引用" class="headerlink" title="make(T,args)返回的是T的引用"></a>make(T,args)返回的是T的引用</h5><p>如果不特殊声明，go的函数默认都是按值传参。在函数内部对值修改不影响值本身，但是make(T,args)通过函数传递参数之后可以直接修改，即map，slice，channel通过参数之后在函数内部修改将直接影响到外部的值</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">modifySlice</span><span class="params">(s []<span class="keyword">int</span>)</span></span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">	s[<span class="number">0</span>] = <span class="number">1</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">s := <span class="built_in">make</span>([]<span class="keyword">int</span>,<span class="number">3</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">fmt.Println(s) <span class="comment">// []int&#123;0,0,0&#125;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">modifySlice(s)</span></pre></td></tr><tr><td class="code"><pre><span class="line">fmt.Println(s) <span class="comment">// []int&#123;1,0,0&#125;</span></span></pre></td></tr></table></figure>
+
+<p>这说明make()返回的是引用类型，在函数内可以直接更改s的原始值，对map和channel也是如此</p>
+<h4 id="很少使用new"><a href="#很少使用new" class="headerlink" title="很少使用new()"></a>很少使用new()</h4><figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span> Foo <span class="keyword">struct</span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">    name <span class="keyword">string</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    age <span class="keyword">int</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="comment">// 声明初始化</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> foo1 Foo</span></pre></td></tr><tr><td class="code"><pre><span class="line">fmt.Printf(<span class="string">"foo1 ---&gt;%v\n"</span>,foo1) <span class="comment">// main.Foo&#123;age:0,name:""&#125;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">foo1.age = <span class="number">1</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">fmt.Println(fool.age)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="comment">// struct literal 初始化</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">foo2 := Foo&#123;&#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">fmt.Printf(<span class="string">"foo1 ---&gt;%v\n"</span>,foo2) <span class="comment">// main.Foo&#123;age:0,name:""&#125;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">foo2.age = <span class="number">2</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">fmt.Println(foo2.age)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="comment">// 指针初始化</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">foo3 := &amp;Foo&#123;&#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">fmt.Printf(<span class="string">"foo1 ---&gt;%v\n"</span>,foo3) <span class="comment">// main.Foo&#123;age:0,name:""&#125;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">foo2.age = <span class="number">3</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">fmt.Println(foo2.age)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="comment">// new 初始化</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">foo4 := <span class="built_in">new</span>(Foo)</span></pre></td></tr><tr><td class="code"><pre><span class="line">...</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="comment">// 声明指针并用 new 初始化</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> foo5 *Foo = <span class="built_in">new</span>(Foo)</span></pre></td></tr><tr><td class="code"><pre><span class="line">...</span></pre></td></tr></table></figure>
+
+<p>foo1 和foo2都是类型的值，foo3/4/5都是Foo的指针类型。但是所有的foo都可以直接使用Foo的field，读取或者修改，为什么？  </p>
+<p>因为go会自动进行转换。foo1.age和foo3.age是等价的。  </p>
+<p>因而可以直接使用struct literal的方式创建对象，能达到和new创建一样的情况而不需要使用new()，这个也是随个人习惯。</p>
+]]></content>
+      <categories>
+        <category>golang</category>
+      </categories>
+      <tags>
+        <tag>golang</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>理解pandas中axis</title>
+    <url>/2019/12/22/%E7%90%86%E8%A7%A3pandas%E4%B8%ADaxis/</url>
+    <content><![CDATA[<blockquote>
+<p>不管是在pandas还是在numpy中，axis作为一个参数都是一个很重要的存在。但有时我们会纠结于axis到底是作用于行还是列中。这里我们就来理解axis到底是如何定义的。</p>
+</blockquote>
+<a id="more"></a>
+
+<p>python中的axis到底是如何定义的。为0/1时是代表行还是列？<br>我们用以下代码做示例    </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span></pre></td></tr><tr><td class="code"><pre><span class="line">df=pd.DataFrame(np.random.rand(<span class="number">12</span>).reshape(<span class="number">4</span>,<span class="number">-1</span>),index=list(<span class="string">'abcd'</span>),columns=list(<span class="string">'ABC'</span>))</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">'''</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">out:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">          A         B         C</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">a  0.931192  0.306019  0.990724</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">b  0.342723  0.174033  0.799012</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">c  0.809201  0.566531  0.135429</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">d  0.068132  0.739093  0.610740</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">out end;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">'''</span></span></pre></td></tr></table></figure>
+
+<p>这里我们先创建了一个DataFrame，现在使用drop方法丢弃掉其中一列，使用axis为1的情况  </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">df.drop(<span class="string">'A'</span>,axis=<span class="number">1</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">'''</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">out:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">          B         C</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">a  0.306019  0.990724</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">b  0.174033  0.799012</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">c  0.566531  0.135429</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">d  0.739093  0.610740</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">out end;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">'''</span></span></pre></td></tr></table></figure>
+
+<p>可以看到A列已经被删除了，在这里axis作用于列。    </p>
+<p>现在我们调用mean(1)求均值</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">df.mean(axis=<span class="number">1</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">'''</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">out:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">a    0.742645</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">b    0.438589</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">c    0.503720</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">d    0.472655</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">dtype: float64</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">out end;</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">'''</span></span></pre></td></tr></table></figure>
+
+<p>对于上面的例子来说，当axis为1时却求出了每一行的均值。  </p>
+<blockquote>
+<p>现在我们来看一下官方帮助的解释：</p>
+</blockquote>
+<p><strong>轴用来为超过一维的数组定义的属性，二维数组拥有两个轴，第0轴沿着行垂直往下。第一轴沿着列的水平方向延申</strong></p>
+<p>用图片来解释就是下图。浅显易懂</p>
+<p><img src="images/%E7%9F%A9%E9%98%B5%E8%BD%B4.png" alt=""></p>
+<p><strong>注意官方使用纵轴和横轴和来解释0和1，而轴是有方向的。所以不要用行和列的思维去解释行和列。因为行和列是没有方向的</strong><br>有了上面的理解之后，我们就可以解释为什么mean(1)时求出的是每一行的平均值了<br>其实是沿着从左到右的方向（也就是上面我们提到的横轴）求出平均值，并不是我们所误解的每一行求平均值。<br> 作用在drop()上时，也是横向发生变化，体现在列的值减少</p>
+]]></content>
+      <categories>
+        <category>python</category>
+        <category>pandas</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>pandas</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>numpy.random中常用模块</title>
+    <url>/2019/12/22/numpy-random%E4%B8%AD%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%9D%97/</url>
+    <content><![CDATA[<blockquote>
+<p>numpy是我们在python中常用的用于数据分析的工具，在numpy里面又存在很多节省时间的方法，例如random模块，这个可以产生随机值的模块。在很大程度上可以帮我们产生需要的一系列值。</p>
+</blockquote>
+<a id="more"></a>
+
+<p>numpy.random常用模块<br><strong>rand(4,3)函数返回0-1之间的数字</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">array([[<span class="number">0.3832652</span> , <span class="number">0.36343273</span>, <span class="number">0.47900132</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">0.62420466</span>, <span class="number">0.13228593</span>, <span class="number">0.58927964</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">0.36499423</span>, <span class="number">0.18262211</span>, <span class="number">0.59475821</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">0.31715646</span>, <span class="number">0.11298201</span>, <span class="number">0.36332277</span>]])</span></pre></td></tr></table></figure>
+
+
+
+<p>*<em>randn(4,3)返回一个或者一组样本，符合正态分布 *</em>  </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">array([[ <span class="number">0.27580105</span>, <span class="number">-0.79606409</span>,  <span class="number">0.27770072</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">-0.41272231</span>,  <span class="number">1.1971399</span> ,  <span class="number">1.144409</span>  ],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [ <span class="number">0.84481791</span>, <span class="number">-1.18783243</span>,  <span class="number">0.92623515</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">np       [ <span class="number">1.45964641</span>, <span class="number">-0.39872575</span>,  <span class="number">0.38672823</span>]])</span></pre></td></tr></table></figure>
+
+
+
+<p><strong>randint(low,high=None,size=None,dtype=</strong>)</p>
+<p>返回随机整数，范围区间为[low,high]，包含Low不包含high<br>size表示数组维度类型，dtype表示数据类型，默认为np.int<br>high值没有填写时，生成的数据是0-low，不包含low  </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">1</span>]: np.random.randint(<span class="number">1</span>,<span class="number">4</span>,size=(<span class="number">2</span>,<span class="number">2</span>))</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">1</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">1</span>, <span class="number">3</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">1</span>, <span class="number">2</span>]])</span></pre></td></tr></table></figure>
+
+<p><strong>生成[0,1)之间的浮点数</strong></p>
+<ul>
+<li>numpy.random.random_sample(size=None)</li>
+<li>numpy.random.random(size=None)</li>
+<li>numpy.random.ranf(s/ize=None)</li>
+<li>numpy.random.sample(size=None)</li>
+</ul>
+<p>size表示维度</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">2</span>]: np.random.random_sample(size=[<span class="number">2</span>,<span class="number">2</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">2</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">0.645753</span>  , <span class="number">0.31327233</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">0.75382147</span>, <span class="number">0.63840037</span>]])</span></pre></td></tr></table></figure>
+
+<p><strong>numpy.random.choice</strong>()</p>
+<p>numpy.random.choice(a,size=None,replace=True,p=None)</p>
+<ul>
+<li>从给定的一维数组中生成随机数</li>
+<li>a为一维数组或者整数，sizes为数组维度，p为数组中数据出现的概率</li>
+<li>如果a是一个整数，对应的一维数组是arange(a)</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">3</span>]: np.random.choice(<span class="number">4</span>,size=[<span class="number">2</span>,<span class="number">4</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">3</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">0</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">0</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">0</span>]])</span></pre></td></tr></table></figure>
+
+<ul>
+<li>当replace是，生成的数据不能有重复值，这就要求数组的长度大于size  </li>
+<li>参数p的长度必须等于数组的长度，且p里面数据之和应该等于0</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">20</span>]: np.random.choice(demo_list,size=(<span class="number">3</span>,<span class="number">3</span>),p=(<span class="number">0.1</span>,<span class="number">0.6</span>,<span class="number">0.1</span>,<span class="number">0.1</span>,<span class="number">0.1</span>))</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">20</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="string">'sansumg'</span>, <span class="string">'lenovo'</span>, <span class="string">'iphone'</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="string">'moto'</span>, <span class="string">'sansumg'</span>, <span class="string">'xiaomi'</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="string">'sansumg'</span>, <span class="string">'sansumg'</span>, <span class="string">'sansumg'</span>]], dtype=<span class="string">'&lt;U7'</span>)</span></pre></td></tr></table></figure>
+
+<p><strong>np.random.seed()</strong></p>
+<ul>
+<li>np.random.seed()的作用，使得随机数据可预测</li>
+<li>当我们设置相同的seed，每次生成的随机数相同。如果不设置seed，则每次会生成不同的随机数</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">44</span>]: np.random.seed(<span class="number">1</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">45</span>]: np.random.rand(<span class="number">4</span>,<span class="number">3</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">45</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">4.17022005e-01</span>, <span class="number">7.20324493e-01</span>, <span class="number">1.14374817e-04</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">3.02332573e-01</span>, <span class="number">1.46755891e-01</span>, <span class="number">9.23385948e-02</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">1.86260211e-01</span>, <span class="number">3.45560727e-01</span>, <span class="number">3.96767474e-01</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">5.38816734e-01</span>, <span class="number">4.19194514e-01</span>, <span class="number">6.85219500e-01</span>]])</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">46</span>]: np.random.seed(<span class="number">1</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">47</span>]: np.random.rand(<span class="number">4</span>,<span class="number">3</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">47</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">4.17022005e-01</span>, <span class="number">7.20324493e-01</span>, <span class="number">1.14374817e-04</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">3.02332573e-01</span>, <span class="number">1.46755891e-01</span>, <span class="number">9.23385948e-02</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">1.86260211e-01</span>, <span class="number">3.45560727e-01</span>, <span class="number">3.96767474e-01</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">5.38816734e-01</span>, <span class="number">4.19194514e-01</span>, <span class="number">6.85219500e-01</span>]])</span></pre></td></tr></table></figure>
+
+<hr>
+<p>这里穿插一个np.arange()，这也是常用到的函数  </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">np.arange(<span class="number">-1</span>,<span class="number">1</span>,<span class="number">0.1</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([<span class="number">-1.00000000e+00</span>, <span class="number">-9.00000000e-01</span>, <span class="number">-8.00000000e-01</span>, <span class="number">-7.00000000e-01</span>,</span></pre></td></tr><tr><td class="code"><pre><span class="line">       <span class="number">-6.00000000e-01</span>, <span class="number">-5.00000000e-01</span>, <span class="number">-4.00000000e-01</span>, <span class="number">-3.00000000e-01</span>,</span></pre></td></tr><tr><td class="code"><pre><span class="line">       <span class="number">-2.00000000e-01</span>, <span class="number">-1.00000000e-01</span>, <span class="number">-2.22044605e-16</span>,  <span class="number">1.00000000e-01</span>,</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="number">2.00000000e-01</span>,  <span class="number">3.00000000e-01</span>,  <span class="number">4.00000000e-01</span>,  <span class="number">5.00000000e-01</span>,</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="number">6.00000000e-01</span>,  <span class="number">7.00000000e-01</span>,  <span class="number">8.00000000e-01</span>,  <span class="number">9.00000000e-01</span>])</span></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>python</category>
+        <category>numpy</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>numpy</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>二分查找算法</title>
+    <url>/2019/12/22/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/</url>
+    <content><![CDATA[<blockquote>
+<p>查找算法是经常用到的算法之一，在很多情况下，我们都需要实现适合需求的查找算法。今天我们来实现排序算法中比较经典的二分查找，并探讨其时间复杂度。</p>
+</blockquote>
+<a id="more"></a>
+
+<h4 id="数据结构与算法"><a href="#数据结构与算法" class="headerlink" title="数据结构与算法"></a>数据结构与算法</h4><p>二分查找要求数组已经是有序的，在有序的基础上进行二分查找。关于数组排序的问题可以参考我之前的博客。</p>
+<h5 id="二分查找："><a href="#二分查找：" class="headerlink" title="二分查找："></a>二分查找：</h5><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binary_search</span><span class="params">(list,item)</span>:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    low = <span class="number">0</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    high = len(list)<span class="number">-1</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">while</span> low &lt;= high:</span></pre></td></tr><tr><td class="code"><pre><span class="line">        mid = int((low+high)/<span class="number">2</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">        guess = list[mid]</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">if</span> guess==item:</span></pre></td></tr><tr><td class="code"><pre><span class="line">            <span class="keyword">return</span> mid</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">if</span> guess&gt;item:</span></pre></td></tr><tr><td class="code"><pre><span class="line">            high = mid + <span class="number">1</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">else</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">            low = mid + <span class="number">1</span> <span class="comment"># 防止进入无限循环</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">return</span> <span class="literal">None</span></span></pre></td></tr></table></figure>
+
+<p>用大O表示法的话，二分查找的时间复杂度为O(log n)（log表示以2为底数），因为对于一个长度为n的数组，利用二分查找方法查找一个元素最多需要使用log n（以2为底数）次数。</p>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>查找</tag>
+        <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>用python实现排序算法</title>
     <url>/2019/12/16/%E7%94%A8python%E5%AE%9E%E7%8E%B0%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<blockquote>
@@ -66,11 +230,16 @@
   <entry>
     <title>numpy average与mean区别</title>
     <url>/2019/12/04/numpy%20average%E4%B8%8Emean%E5%8C%BA%E5%88%AB,/</url>
-    <content><![CDATA[<p><strong>numpy average与mean区别,</strong><br>这里看几个小例子</p>
+    <content><![CDATA[<blockquote>
+<p>average和mean都表示均值，但是两个函数却是各有侧重点。这就要求我们在特定的情况下调用最适合的函数。这里我们就来讲一下这连个容易混淆的方法。</p>
+</blockquote>
+<a id="more"></a>
+
+<p><strong>numpy average与mean区别</strong><br>这里看几个小例子</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">5</span>]: df = pd.DataFrame(&#123;<span class="string">'data1'</span>:np.random.randn(<span class="number">8</span>),<span class="string">'data2'</span>:np.random.randn(<span class="number">8</span>)&#125;)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">6</span>]: df</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">6</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">      data1     data2</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="number">0</span> <span class="number">-0.904163</span>  <span class="number">1.266769</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="number">1</span>  <span class="number">0.349836</span>  <span class="number">0.372943</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="number">2</span> <span class="number">-0.140213</span> <span class="number">-1.850433</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="number">3</span>  <span class="number">0.159576</span> <span class="number">-0.712505</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="number">4</span> <span class="number">-0.133263</span> <span class="number">-0.710342</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="number">5</span> <span class="number">-0.426558</span>  <span class="number">2.569380</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="number">6</span> <span class="number">-0.478641</span> <span class="number">-0.912875</span></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="number">7</span> <span class="number">-0.159328</span>  <span class="number">0.988578</span></span></pre></td></tr></table></figure>
 
 <p>在不传入axis的情况下，对df分别进行average()与mean()运算</p>
-<a id="more"></a>
+<!--more-->
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">In [10]: np.average(df)</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[10]: -0.04507746461893059</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [12]: np.mean(df)</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[12]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">data1   -0.216594</span></pre></td></tr><tr><td class="code"><pre><span class="line">data2    0.126439</span></pre></td></tr><tr><td class="code"><pre><span class="line">dtype: float64</span></pre></td></tr></table></figure>
 
 <p>可见np.average方法是对整体取平均值，而np.mean()是默认axis=0的情况下求平均值<br>且两个函数返回的数据类型不同，np.average()返回array数组，而np.mean()返回的是Series类型</p>

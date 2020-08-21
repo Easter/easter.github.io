@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>weiyuan</title>
-    <url>/2020/08/21/rpm%E6%9F%A5%E6%89%BE%E6%BA%90%E7%A0%81%E5%8C%85%E6%B5%81%E7%A8%8B/</url>
+    <title>rpm查找源码包的基本流程</title>
+    <url>/2020/08/21/rpm%E6%9F%A5%E6%89%BE%E6%BA%90%E7%A0%81%E5%8C%85%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B/</url>
     <content><![CDATA[<blockquote>
 <p>linux系统修复Bug时通常需要找到rpm源码包进行修改，本文主要介绍如何进行源码包的匹配。</p>
 </blockquote>
@@ -182,8 +182,8 @@
         <category>numpy</category>
       </categories>
       <tags>
-        <tag>numpy</tag>
         <tag>python</tag>
+        <tag>numpy</tag>
       </tags>
   </entry>
   <entry>
@@ -266,8 +266,8 @@
         <category>numpy</category>
       </categories>
       <tags>
-        <tag>numpy</tag>
         <tag>python</tag>
+        <tag>numpy</tag>
       </tags>
   </entry>
   <entry>
@@ -308,8 +308,8 @@
         <category>numpy</category>
       </categories>
       <tags>
-        <tag>numpy</tag>
         <tag>python</tag>
+        <tag>numpy</tag>
         <tag>数据分析</tag>
       </tags>
   </entry>
@@ -344,8 +344,8 @@
         <category>numpy</category>
       </categories>
       <tags>
-        <tag>numpy</tag>
         <tag>python</tag>
+        <tag>numpy</tag>
         <tag>数据分析</tag>
       </tags>
   </entry>

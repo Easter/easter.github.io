@@ -45,18 +45,18 @@
   };
 </script>
 
-  <meta name="description" content="linux系统修复Bug时通常需要找到rpm源码包进行修改，本文主要介绍如何进行源码包的匹配。">
-<meta name="keywords" content="linux,rpm 编包">
+  <meta name="description" content="在kylin10 V10操作系统中存在右键任务栏，显示工作区相关内容的bug，本文介绍如何解决">
+<meta name="keywords" content="linux,bug解决流程">
 <meta property="og:type" content="article">
-<meta property="og:title" content="rpm查找源码包的基本流程">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;08&#x2F;21&#x2F;rpm%E6%9F%A5%E6%89%BE%E6%BA%90%E7%A0%81%E5%8C%85%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B&#x2F;index.html">
+<meta property="og:title" content=" linux工作区bug解决流程">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;09&#x2F;04&#x2F;linux%E5%B7%A5%E4%BD%9C%E5%8C%BAbug%E8%A7%A3%E5%86%B3%E6%B5%81%E7%A8%8B&#x2F;index.html">
 <meta property="og:site_name" content="Easter&#39;s blog">
-<meta property="og:description" content="linux系统修复Bug时通常需要找到rpm源码包进行修改，本文主要介绍如何进行源码包的匹配。">
+<meta property="og:description" content="在kylin10 V10操作系统中存在右键任务栏，显示工作区相关内容的bug，本文介绍如何解决">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-08-21T07:47:43.809Z">
+<meta property="og:updated_time" content="2020-09-06T14:25:43.260Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/2020/08/21/rpm%E6%9F%A5%E6%89%BE%E6%BA%90%E7%A0%81%E5%8C%85%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B/">
+<link rel="canonical" href="http://yoursite.com/2020/09/04/linux%E5%B7%A5%E4%BD%9C%E5%8C%BAbug%E8%A7%A3%E5%86%B3%E6%B5%81%E7%A8%8B/">
 
 
 <script id="page-configurations">
@@ -70,7 +70,7 @@
   };
 </script>
 
-  <title>rpm查找源码包的基本流程 | Easter's blog</title>
+  <title> linux工作区bug解决流程 | Easter's blog</title>
   
 
 
@@ -211,7 +211,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/21/rpm%E6%9F%A5%E6%89%BE%E6%BA%90%E7%A0%81%E5%8C%85%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/04/linux%E5%B7%A5%E4%BD%9C%E5%8C%BAbug%E8%A7%A3%E5%86%B3%E6%B5%81%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/logo.jpg">
@@ -224,7 +224,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          rpm查找源码包的基本流程
+           linux工作区bug解决流程
         </h1>
 
         <div class="post-meta">
@@ -233,10 +233,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-08-21 15:46:23 / 修改时间：15:47:43" itemprop="dateCreated datePublished" datetime="2020-08-21T15:46:23+08:00">2020-08-21</time>
+              <time title="创建时间：2020-09-04 10:46:36" itemprop="dateCreated datePublished" datetime="2020-09-04T10:46:36+08:00">2020-09-04</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-06 22:25:43" itemprop="dateModified" datetime="2020-09-06T22:25:43+08:00">2020-09-06</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -261,34 +267,77 @@
 
       
         <blockquote>
-<p>linux系统修复Bug时通常需要找到rpm源码包进行修改，本文主要介绍如何进行源码包的匹配。</p>
+<p>在kylin10 V10操作系统中存在右键任务栏，显示工作区相关内容的bug，本文介绍如何解决</p>
 </blockquote>
 <a id="more"></a>
 
-<h4 id="查找源码包流程"><a href="#查找源码包流程" class="headerlink" title="查找源码包流程"></a>查找源码包流程</h4><h5 id="第一种方法"><a href="#第一种方法" class="headerlink" title="第一种方法"></a>第一种方法</h5><p><strong>通过进程名称查找</strong></p>
-<p>先用top找到相关的进程名，可以后面使用-接参数，可灵活使用</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">top</span></pre></td></tr></table></figure>
+<h4 id="定位问题"><a href="#定位问题" class="headerlink" title="定位问题"></a>定位问题</h4><p>查找rpm包的基本流程在之前的文章中有提到。本篇也算是将理论实践了一番。感兴趣的可以看一下<br>由于任务区存在汉化功能。可以直接在/usr/share/locale中直接查找关键字</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">cd /usr/share/locale</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">grep -r "仅在此工作区显示"</span></pre></td></tr></table></figure>
 
-<p>找到对应的进程名称之后通过rpm -qa搜索进程名，可以出现部分rpm包</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">rpm -qa | grep 进程名称</span></pre></td></tr></table></figure>
+<p>然后就可以搜索到相应的汉化.mo文件<br>找到相关文件之后，我们就可以通过rpm命令来找到是哪个rpm包中存在此文件。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">rpm -qf /usr/share/locale/XXX (XXX指的是上面查找到的文件名)</span></pre></td></tr></table></figure>
 
-<p>可以匹配出几个rpm安装包，使用这种方法可能匹配出来的包较多，所以不能够确定具体时哪个包<br>所以不太确定  </p>
-<h5 id="第二种方法"><a href="#第二种方法" class="headerlink" title="第二种方法"></a>第二种方法</h5><p><strong>通过汉化包查找</strong></p>
-<p>首先进入到 /usr/share/locale目录</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">cd /usr/share/locale</span></pre></td></tr></table></figure>
+<p>知道了是哪个rpm包支持此功能，我们就可以通过rpm命令找到src源码包名</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">rpm -qi XXX（XXX指的是上面提到的rpm包名）</span></pre></td></tr></table></figure>
 
-<p>然后再在此目录内匹配搜索相关信息，例如:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">grep -r "发送到桌面快捷方式"</span></pre></td></tr></table></figure>
+<p>至此，就可以定位到工作区源码包。</p>
+<h4 id="定位并屏蔽源代码"><a href="#定位并屏蔽源代码" class="headerlink" title="定位并屏蔽源代码"></a>定位并屏蔽源代码</h4><p><strong>确定是哪个模块负责工作区，使用关键字进行搜索</strong></p>
+<ul>
+<li>使用grep命令查找关键字</li>
+<li>通过搞清代码结构，可以尝试，但是过于复杂，时间可能不够用</li>
+</ul>
+<p>这里我们采用第一种方法</p>
+<p><code>grep -r &quot;_Only On This Workspace&quot;</code></p>
+<p>可以定位到源码在哪里，由于此bug逻辑比较简单。直接将搜索到的代码模块屏蔽即可</p>
+<h4 id="生成patch重新编译"><a href="#生成patch重新编译" class="headerlink" title="生成patch重新编译"></a>生成patch重新编译</h4><p>制作patch文件<br>通过git format-patch HEAD^生成补丁，patch文件里可以有文件对比的差异。<br>打patch步骤如下：</p>
+<ul>
+<li><p>获取源码，通过rpm ivh xxx.src.rpm，可以在家目录中生成rpmbuild目录，并生成SOURCE及SPEC目录。分别存放.tar包以及.spec文件</p>
+</li>
+<li><p>展开源码包，进入SPEC目录，通过rpmbuild -bp xxx.spec命令，在rpmbuild目录下生成BUILD目录，并解压.tar文件到BUILD目录下获取到源码</p>
+</li>
+<li><p>生成parch文件，使用git format-patch生成patch文件</p>
+</li>
+<li><ul>
+<li>首先在BUILD目录中生成git仓库，使用git init命令</li>
+<li>接下来，追踪本地所有源代码git add –all</li>
+<li>然后，使用git commit -m “提交描述” 将源代码提交到仓库</li>
+<li>下一步，修改源码，自行vim操作，然后git add –all 提交更改，之后git commit -m “修改描述”</li>
+<li>生成patch文件，git format-patch HEAD^</li>
+<li>最后，复制patch文件~/rpmbuild/SOURCE中</li>
+</ul>
+</li>
+<li><p>修改spec文件，将patch文件添加进去。此处为添加patch</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Begin add by XXX</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Patch0:xxx.patch</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> End add by XXX</span></span></pre></td></tr></table></figure>
 
-<p>基本可以确定是哪个文件里面有这个汉化包<br>然后根据上面搜索到的文件路径，使用rpm -qf匹配时哪个安装包</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">rpm -qf "/usr/share/locale/上面查找到文件的路径"</span></pre></td></tr></table></figure>
+<ul>
+<li>将补丁打入，其中注意其中的-p1（路径问题，可以网上搜索一下）</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> %patch0 p1 -b .inline-icons</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> %patch0 p1</span></span></pre></td></tr></table></figure>
 
-<p>确定安装包的名称</p>
-<p>然后根据匹配到的安装包名通过 rpm -qi 找到源码包名字</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">rpm -qi 安装包名称</span></pre></td></tr></table></figure>
+<ul>
+<li>修改changelog，注意格式问题</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> * Wed Aug 19 2020 warren &lt;weiyuan@kylinos.cn&gt; 2.31.0-1</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> - add patch xxx(尽量详细)</span></span></pre></td></tr></table></figure>
 
-<p>找到源码包之后下载源码包，找到相应的源码修改即可</p>
-<p><strong>可将两种方法结合起来灵活使用为佳</strong></p>
+<p>​    完成上述过程后已经对源码进行spec文件修改，相应的Patch文件已经放入SOURCE文件中。可以运行 rpmbuild -bp xxx.spec文件，查看BUILD中源码是否被修改</p>
+<ul>
+<li>rpm -ba xxx.spec 重新编译所有的包</li>
+</ul>
+<h4 id="重新安装"><a href="#重新安装" class="headerlink" title="重新安装"></a>重新安装</h4><ul>
+<li>rpm -e xxx.rpm –nodeps ，不管依赖直接卸载rpm包</li>
+</ul>
+<p><code>rpm -e xxx.rpm --nodeps</code></p>
+<ul>
+<li>安装后生成的rpm包，rpm -ivh xxx.rpm</li>
+</ul>
+<p><code>rpm -ivh xxx.rpm</code></p>
+<ul>
+<li>重启</li>
+</ul>
+<p><code>reboot</code></p>
+<p>完！</p>
 
     </div>
 
@@ -299,7 +348,7 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/linux/" rel="tag"># linux</a>
-              <a href="/tags/rpm-%E7%BC%96%E5%8C%85/" rel="tag"># rpm 编包</a>
+              <a href="/tags/bug%E8%A7%A3%E5%86%B3%E6%B5%81%E7%A8%8B/" rel="tag"># bug解决流程</a>
           </div>
 
         
@@ -308,13 +357,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/12/22/go%E8%AF%AD%E8%A8%80-make%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/" rel="prev" title="go语言 make和new的区别">
-      <i class="fa fa-chevron-left"></i> go语言 make和new的区别
+    <a href="/2020/09/02/%E6%90%AD%E5%BB%BAovirt-engine%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B/" rel="prev" title=" 搭建ovirt-engine基本流程 ">
+      <i class="fa fa-chevron-left"></i>  搭建ovirt-engine基本流程 
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/09/02/%E6%90%AD%E5%BB%BAovirt-engine%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B/" rel="next" title=" 搭建ovirt-engine基本流程 ">
-       搭建ovirt-engine基本流程  <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -352,7 +398,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#查找源码包流程"><span class="nav-number">1.</span> <span class="nav-text">查找源码包流程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#第一种方法"><span class="nav-number">1.1.</span> <span class="nav-text">第一种方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#第二种方法"><span class="nav-number">1.2.</span> <span class="nav-text">第二种方法</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#定位问题"><span class="nav-number">1.</span> <span class="nav-text">定位问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#定位并屏蔽源代码"><span class="nav-number">2.</span> <span class="nav-text">定位并屏蔽源代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生成patch重新编译"><span class="nav-number">3.</span> <span class="nav-text">生成patch重新编译</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重新安装"><span class="nav-number">4.</span> <span class="nav-text">重新安装</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

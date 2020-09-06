@@ -45,18 +45,14 @@
   };
 </script>
 
-  <meta name="description" content="linux系统修复Bug时通常需要找到rpm源码包进行修改，本文主要介绍如何进行源码包的匹配。">
-<meta name="keywords" content="linux,rpm 编包">
-<meta property="og:type" content="article">
-<meta property="og:title" content="rpm查找源码包的基本流程">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;08&#x2F;21&#x2F;rpm%E6%9F%A5%E6%89%BE%E6%BA%90%E7%A0%81%E5%8C%85%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B&#x2F;index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Easter&#39;s blog">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;archives&#x2F;page&#x2F;2&#x2F;index.html">
 <meta property="og:site_name" content="Easter&#39;s blog">
-<meta property="og:description" content="linux系统修复Bug时通常需要找到rpm源码包进行修改，本文主要介绍如何进行源码包的匹配。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-08-21T07:47:43.809Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/2020/08/21/rpm%E6%9F%A5%E6%89%BE%E6%BA%90%E7%A0%81%E5%8C%85%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B/">
+<link rel="canonical" href="http://yoursite.com/archives/page/2/">
 
 
 <script id="page-configurations">
@@ -64,13 +60,13 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: true,
+    isPost: false,
     isPage: false,
-    isArchive: false
+    isArchive: true
   };
 </script>
 
-  <title>rpm查找源码包的基本流程 | Easter's blog</title>
+  <title>归档 | Easter's blog</title>
   
 
 
@@ -206,124 +202,52 @@
           <div class="content">
             
 
-  <div class="posts-expand">
-      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/21/rpm%E6%9F%A5%E6%89%BE%E6%BA%90%E7%A0%81%E5%8C%85%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/logo.jpg">
-      <meta itemprop="name" content="warren">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Easter's blog">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          rpm查找源码包的基本流程
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-08-21 15:46:23 / 修改时间：15:47:43" itemprop="dateCreated datePublished" datetime="2020-08-21T15:46:23+08:00">2020-08-21</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
+  
+  <div class="post-block">
+    <div class="posts-collapse">
+      <div class="collection-title">
+        <span class="collection-header">嗯..! 目前共计 11 篇日志。 继续努力。</span>
+      </div>
 
       
-        <blockquote>
-<p>linux系统修复Bug时通常需要找到rpm源码包进行修改，本文主要介绍如何进行源码包的匹配。</p>
-</blockquote>
-<a id="more"></a>
-
-<h4 id="查找源码包流程"><a href="#查找源码包流程" class="headerlink" title="查找源码包流程"></a>查找源码包流程</h4><h5 id="第一种方法"><a href="#第一种方法" class="headerlink" title="第一种方法"></a>第一种方法</h5><p><strong>通过进程名称查找</strong></p>
-<p>先用top找到相关的进程名，可以后面使用-接参数，可灵活使用</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">top</span></pre></td></tr></table></figure>
-
-<p>找到对应的进程名称之后通过rpm -qa搜索进程名，可以出现部分rpm包</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">rpm -qa | grep 进程名称</span></pre></td></tr></table></figure>
-
-<p>可以匹配出几个rpm安装包，使用这种方法可能匹配出来的包较多，所以不能够确定具体时哪个包<br>所以不太确定  </p>
-<h5 id="第二种方法"><a href="#第二种方法" class="headerlink" title="第二种方法"></a>第二种方法</h5><p><strong>通过汉化包查找</strong></p>
-<p>首先进入到 /usr/share/locale目录</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">cd /usr/share/locale</span></pre></td></tr></table></figure>
-
-<p>然后再在此目录内匹配搜索相关信息，例如:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">grep -r "发送到桌面快捷方式"</span></pre></td></tr></table></figure>
-
-<p>基本可以确定是哪个文件里面有这个汉化包<br>然后根据上面搜索到的文件路径，使用rpm -qf匹配时哪个安装包</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">rpm -qf "/usr/share/locale/上面查找到文件的路径"</span></pre></td></tr></table></figure>
-
-<p>确定安装包的名称</p>
-<p>然后根据匹配到的安装包名通过 rpm -qi 找到源码包名字</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">rpm -qi 安装包名称</span></pre></td></tr></table></figure>
-
-<p>找到源码包之后下载源码包，找到相应的源码修改即可</p>
-<p><strong>可将两种方法结合起来灵活使用为佳</strong></p>
-
+    <div class="collection-year">
+      <h1 class="collection-header">2019</h1>
     </div>
 
-    
-    
-    
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
 
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/linux/" rel="tag"># linux</a>
-              <a href="/tags/rpm-%E7%BC%96%E5%8C%85/" rel="tag"># rpm 编包</a>
-          </div>
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2019-12-04T22:44:02+08:00"
+              content="2019-12-04">
+          12-04
+        </time>
+      </div>
 
-        
+      <h2 class="post-title">
+          <a class="post-title-link" href="/2019/12/04/numpy%20average%E4%B8%8Emean%E5%8C%BA%E5%88%AB,/" itemprop="url">
+            <span itemprop="name">numpy average与mean区别</span>
+          </a>
+      </h2>
 
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2019/12/22/go%E8%AF%AD%E8%A8%80-make%E5%92%8Cnew%E7%9A%84%E5%8C%BA%E5%88%AB/" rel="prev" title="go语言 make和new的区别">
-      <i class="fa fa-chevron-left"></i> go语言 make和new的区别
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/09/02/%E6%90%AD%E5%BB%BAovirt-engine%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B/" rel="next" title=" 搭建ovirt-engine基本流程 ">
-       搭建ovirt-engine基本流程  <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
+    </header>
   </article>
+
+
+    </div>
+  </div>
   
   
   
 
-  </div>
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/archives/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/archives/">1</a><span class="page-number current">2</span>
+  </nav>
+
 
 
           </div>
@@ -352,7 +276,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#查找源码包流程"><span class="nav-number">1.</span> <span class="nav-text">查找源码包流程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#第一种方法"><span class="nav-number">1.1.</span> <span class="nav-text">第一种方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#第二种方法"><span class="nav-number">1.2.</span> <span class="nav-text">第二种方法</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

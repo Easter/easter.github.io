@@ -62,18 +62,7 @@
 <ul>
 <li>rpm -ba xxx.spec 重新编译所有的包</li>
 </ul>
-<h4 id="重新安装"><a href="#重新安装" class="headerlink" title="重新安装"></a>重新安装</h4><ul>
-<li>rpm -e xxx.rpm –nodeps ，不管依赖直接卸载rpm包</li>
-</ul>
-<p><code>rpm -e xxx.rpm --nodeps</code></p>
-<ul>
-<li>安装后生成的rpm包，rpm -ivh xxx.rpm</li>
-</ul>
-<p><code>rpm -ivh xxx.rpm</code></p>
-<ul>
-<li>重启</li>
-</ul>
-<p><code>reboot</code></p>
+<h4 id="重新安装"><a href="#重新安装" class="headerlink" title="重新安装"></a>重新安装</h4><p>rpm -e xxx.rpm –nodeps ，不管依赖直接卸载rpm包<br>安装后生成的rpm包，rpm -ivh xxx.rpm<br>重启reboot</p>
 <p>完！</p>
 ]]></content>
       <categories>
@@ -419,42 +408,6 @@
       </tags>
   </entry>
   <entry>
-    <title>numpy中meshgrid函数</title>
-    <url>/2019/12/04/numpy%E4%B8%ADmeshgrid%E5%87%BD%E6%95%B0/</url>
-    <content><![CDATA[<p>numpy中meshgrid函数</p>
-<p>先来看官方文档：<br> <a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.meshgrid.html" target="_blank" rel="noopener">https://docs.scipy.org/doc/numpy/reference/generated/numpy.meshgrid.html</a><br>功能：从一个坐标向量中返回一个坐标矩阵<br>参数：  </p>
-<ul>
-<li>x1，x2，x3：一维的数组代表网格的坐标</li>
-<li>indexing：{‘xy’,’ij’}，笛卡尔坐标’xy’或者矩阵’ij’下标作为输出，默认是笛卡尔坐标</li>
-<li>sparse：bool类型，如果是True，返回一个稀疏矩阵保存在内存中，默认为False</li>
-<li>copy： bool类型，如果是False，返回一个原始数组的视图保存在内存中，默认是True。如果，sparse和copy都为False，将有可能返回一个不连续的数组。而且，如果广播数组的元素超过一个，可以使用一个独立的内存。如果想要对这个数组进行写操作，请先拷贝这个数组。 </li>
-</ul>
-<p>看完官方文档之后还是一脸懵逼？？？？直接上例子解释</p>
-<a id="more"></a>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">1</span>]: nx,ny = (<span class="number">3</span>,<span class="number">2</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">4</span>]: x = np.linspace(<span class="number">1</span>,<span class="number">2</span>,nx) <span class="comment"># [1,1.5,2]</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">6</span>]: y = np.linspace(<span class="number">1</span>,<span class="number">2</span>,ny) <span class="comment"># [1,2]</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">7</span>]: xv,yv = np.meshgrid(x,y)</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">10</span>]: xv</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">10</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">1.</span> , <span class="number">1.5</span>, <span class="number">2.</span> ],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">1.</span> , <span class="number">1.5</span>, <span class="number">2.</span> ]])</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">11</span>]: yv</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">11</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">2.</span>, <span class="number">2.</span>, <span class="number">2.</span>]])</span></pre></td></tr></table></figure>
-
-<p>上面的例子可以看出是将两个输入的数组进行拓展，前一个拓展与后一个有关，后一个拓展与前一个有关。前一个是竖轴拓展，后一个是横轴拓展。  </p>
-<p>因为 y 的长度为2，所以 x 竖向被拓展成原来的两倍。同理，y被拓展成横向的三倍 ，输入由原来的数组变成了矩阵，下面我们来看一下表格矩阵的坐标：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">1</span>]: xv.ravel()</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">1</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([<span class="number">1.</span>,<span class="number">1.5</span>,<span class="number">2.</span>,<span class="number">1.</span>,<span class="number">1.5</span>,<span class="number">2.</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">2</span>]: yv.ravel()</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">2</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">2.</span>, <span class="number">2.</span>, <span class="number">2.</span>])</span></pre></td></tr></table></figure>
-
-<p>ravel函数的作用是将矩阵变成一个一维的数组，其中xv.ravel()表示x轴的坐标，yv.ravel()表示y轴的坐标，我们将x轴与y轴的坐标一一对应，就形成了一个网格的坐标  </p>
-<p>如果将sparse参数设置为True，就不会向上面一样拓展了，它产生的网格不是所有的坐标，只有网格对角线上的坐标。  </p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">1</span>]: xv,yv = np.meshgrid(x,y,sparse=<span class="literal">True</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">2</span>]: xv</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">2</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">1.</span> , <span class="number">1.5</span>, <span class="number">2.</span> ]])</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">3</span>]: yv</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">3</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">1.</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">2.</span>]])</span></pre></td></tr></table></figure>
-
-<p>补充，这里的数组参数也可以是3个，相应的会产生3个矩阵。实践出真知，最好还是实践一下</p>
-]]></content>
-      <categories>
-        <category>python</category>
-        <category>numpy</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-        <tag>numpy</tag>
-        <tag>数据分析</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>numpy average与mean区别</title>
     <url>/2019/12/04/numpy%20average%E4%B8%8Emean%E5%8C%BA%E5%88%AB,/</url>
     <content><![CDATA[<blockquote>
@@ -486,6 +439,42 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">17</span>]: np.average(df[<span class="string">'data1'</span>],weights=df[<span class="string">'data2'</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">17</span>]: <span class="number">-1.572923774192011</span></span></pre></td></tr></table></figure>
 
 <p>得出结果</p>
+]]></content>
+      <categories>
+        <category>python</category>
+        <category>numpy</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>numpy</tag>
+        <tag>数据分析</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>numpy中meshgrid函数</title>
+    <url>/2019/12/04/numpy%E4%B8%ADmeshgrid%E5%87%BD%E6%95%B0/</url>
+    <content><![CDATA[<p>numpy中meshgrid函数</p>
+<p>先来看官方文档：<br> <a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.meshgrid.html" target="_blank" rel="noopener">https://docs.scipy.org/doc/numpy/reference/generated/numpy.meshgrid.html</a><br>功能：从一个坐标向量中返回一个坐标矩阵<br>参数：  </p>
+<ul>
+<li>x1，x2，x3：一维的数组代表网格的坐标</li>
+<li>indexing：{‘xy’,’ij’}，笛卡尔坐标’xy’或者矩阵’ij’下标作为输出，默认是笛卡尔坐标</li>
+<li>sparse：bool类型，如果是True，返回一个稀疏矩阵保存在内存中，默认为False</li>
+<li>copy： bool类型，如果是False，返回一个原始数组的视图保存在内存中，默认是True。如果，sparse和copy都为False，将有可能返回一个不连续的数组。而且，如果广播数组的元素超过一个，可以使用一个独立的内存。如果想要对这个数组进行写操作，请先拷贝这个数组。 </li>
+</ul>
+<p>看完官方文档之后还是一脸懵逼？？？？直接上例子解释</p>
+<a id="more"></a>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">1</span>]: nx,ny = (<span class="number">3</span>,<span class="number">2</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">4</span>]: x = np.linspace(<span class="number">1</span>,<span class="number">2</span>,nx) <span class="comment"># [1,1.5,2]</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">6</span>]: y = np.linspace(<span class="number">1</span>,<span class="number">2</span>,ny) <span class="comment"># [1,2]</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">7</span>]: xv,yv = np.meshgrid(x,y)</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">10</span>]: xv</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">10</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">1.</span> , <span class="number">1.5</span>, <span class="number">2.</span> ],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">1.</span> , <span class="number">1.5</span>, <span class="number">2.</span> ]])</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">11</span>]: yv</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">11</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">2.</span>, <span class="number">2.</span>, <span class="number">2.</span>]])</span></pre></td></tr></table></figure>
+
+<p>上面的例子可以看出是将两个输入的数组进行拓展，前一个拓展与后一个有关，后一个拓展与前一个有关。前一个是竖轴拓展，后一个是横轴拓展。  </p>
+<p>因为 y 的长度为2，所以 x 竖向被拓展成原来的两倍。同理，y被拓展成横向的三倍 ，输入由原来的数组变成了矩阵，下面我们来看一下表格矩阵的坐标：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">1</span>]: xv.ravel()</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">1</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([<span class="number">1.</span>,<span class="number">1.5</span>,<span class="number">2.</span>,<span class="number">1.</span>,<span class="number">1.5</span>,<span class="number">2.</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">2</span>]: yv.ravel()</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">2</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">2.</span>, <span class="number">2.</span>, <span class="number">2.</span>])</span></pre></td></tr></table></figure>
+
+<p>ravel函数的作用是将矩阵变成一个一维的数组，其中xv.ravel()表示x轴的坐标，yv.ravel()表示y轴的坐标，我们将x轴与y轴的坐标一一对应，就形成了一个网格的坐标  </p>
+<p>如果将sparse参数设置为True，就不会向上面一样拓展了，它产生的网格不是所有的坐标，只有网格对角线上的坐标。  </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">1</span>]: xv,yv = np.meshgrid(x,y,sparse=<span class="literal">True</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">2</span>]: xv</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">2</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">1.</span> , <span class="number">1.5</span>, <span class="number">2.</span> ]])</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">3</span>]: yv</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">3</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">1.</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">2.</span>]])</span></pre></td></tr></table></figure>
+
+<p>补充，这里的数组参数也可以是3个，相应的会产生3个矩阵。实践出真知，最好还是实践一下</p>
 ]]></content>
       <categories>
         <category>python</category>

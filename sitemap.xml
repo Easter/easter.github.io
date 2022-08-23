@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://yoursite.com/2019/12/04/test/</loc>
+    <loc>http://yoursite.com/2022/08/24/test/</loc>
     
     <lastmod>2022-08-23</lastmod>
     
@@ -188,13 +188,6 @@
   </url>
   
   <url>
-    <loc>http://yoursite.com/tags/rpm-%E7%BC%96%E5%8C%85/</loc>
-    <lastmod>2022-08-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://yoursite.com/tags/%E6%9F%A5%E6%89%BE/</loc>
     <lastmod>2022-08-23</lastmod>
     <changefreq>weekly</changefreq>
@@ -224,6 +217,13 @@
   
   <url>
     <loc>http://yoursite.com/tags/pandas/</loc>
+    <lastmod>2022-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/tags/rpm-%E7%BC%96%E5%8C%85/</loc>
     <lastmod>2022-08-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -260,13 +260,6 @@
   </url>
   
   <url>
-    <loc>http://yoursite.com/categories/numpy/</loc>
-    <lastmod>2022-08-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://yoursite.com/categories/%E7%AE%97%E6%B3%95/</loc>
     <lastmod>2022-08-23</lastmod>
     <changefreq>weekly</changefreq>
@@ -282,6 +275,13 @@
   
   <url>
     <loc>http://yoursite.com/categories/python/pandas/</loc>
+    <lastmod>2022-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/categories/numpy/</loc>
     <lastmod>2022-08-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

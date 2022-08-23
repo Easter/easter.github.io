@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>test new compute</title>
+    <url>/2022/08/24/test/</url>
+    <content><![CDATA[<h3 id="test-new-compute"><a href="#test-new-compute" class="headerlink" title="test new compute"></a>test new compute</h3>]]></content>
+      <categories>
+        <category>python</category>
+        <category>numpy</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>numpy</tag>
+        <tag>数据分析</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>如何定制centOS7系统</title>
     <url>/2020/09/12/%E5%A6%82%E4%BD%95%E5%AE%9A%E5%88%B6centOS7%E7%B3%BB%E7%BB%9F/</url>
     <content><![CDATA[<blockquote>
@@ -520,20 +534,6 @@
 
 <p>补充，这里的数组参数也可以是3个，相应的会产生3个矩阵。实践出真知，最好还是实践一下</p>
 ]]></content>
-      <categories>
-        <category>python</category>
-        <category>numpy</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-        <tag>numpy</tag>
-        <tag>数据分析</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>numpy中meshgrid函数</title>
-    <url>/2019/12/04/test/</url>
-    <content><![CDATA[<h3 id="test-new-compute"><a href="#test-new-compute" class="headerlink" title="test new compute"></a>test new compute</h3>]]></content>
       <categories>
         <category>python</category>
         <category>numpy</category>

@@ -6,7 +6,7 @@
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2022-08-23T16:04:30.998Z</updated>
+  <updated>2022-08-23T16:15:24.082Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -17,32 +17,29 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>test new compute</title>
-    <link href="http://yoursite.com/2022/08/24/test/"/>
-    <id>http://yoursite.com/2022/08/24/test/</id>
-    <published>2022-08-23T16:04:30.998Z</published>
-    <updated>2022-08-23T16:04:30.998Z</updated>
+    <title>前言</title>
+    <link href="http://yoursite.com/2022/08/24/hello-world/"/>
+    <id>http://yoursite.com/2022/08/24/hello-world/</id>
+    <published>2022-08-23T16:10:41.000Z</published>
+    <updated>2022-08-23T16:15:24.082Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="test-new-compute"><a href="#test-new-compute" class="headerlink" title="test new compute"></a>test new compute</h3>]]></content>
+    <content type="html"><![CDATA[<blockquote><p>静以修身，俭以养德，非淡泊无以明志，非宁静无以致远。</p></blockquote>]]></content>
     
     
       
       
-    <summary type="html">&lt;h3 id=&quot;test-new-compute&quot;&gt;&lt;a href=&quot;#test-new-compute&quot; class=&quot;headerlink&quot; title=&quot;test new compute&quot;&gt;&lt;/a&gt;test new compute&lt;/h3&gt;</summary>
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;静以修身，俭以养德，非淡泊无以明志，非宁静无以致远。&lt;/p&gt;
+&lt;/blockquote&gt;
+</summary>
       
     
     
     
-    <category term="python" scheme="http://yoursite.com/categories/python/"/>
-    
-    <category term="numpy" scheme="http://yoursite.com/categories/python/numpy/"/>
+    <category term="test-catagory" scheme="http://yoursite.com/categories/test-catagory/"/>
     
     
-    <category term="python" scheme="http://yoursite.com/tags/python/"/>
-    
-    <category term="numpy" scheme="http://yoursite.com/tags/numpy/"/>
-    
-    <category term="数据分析" scheme="http://yoursite.com/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/"/>
+    <category term="test-tag" scheme="http://yoursite.com/tags/test-tag/"/>
     
   </entry>
   

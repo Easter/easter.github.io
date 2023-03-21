@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Lato:300,300italic,400,400italic,700,700italic|PingFang SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: 'YQWVT5TBW9',
+      apiKey: 'c2e8e95e326e549b98d7b21074d18c4a',
+      indexName: 'blog_search',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="KubeSphere是在Kubernetes之上构建的以应用为中心的企业级分布式容器平台，提供简单易用的操作界面以及向导式操作方式。">
+<meta name="keywords" content="kubesphere,k8s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kubesphere搭建流程">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2023&#x2F;03&#x2F;21&#x2F;kubesphere%E6%90%AD%E5%BB%BA%E6%B5%81%E7%A8%8B&#x2F;index.html">
+<meta property="og:site_name" content="Easter&#39;s blog">
+<meta property="og:description" content="KubeSphere是在Kubernetes之上构建的以应用为中心的企业级分布式容器平台，提供简单易用的操作界面以及向导式操作方式。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-03-21T07:23:27.766Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2023/03/21/kubesphere%E6%90%AD%E5%BB%BA%E6%B5%81%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>kubesphere搭建流程 | Easter's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Easter's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Easter's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">数据分析</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input" id="search-input"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+  
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/03/21/kubesphere%E6%90%AD%E5%BB%BA%E6%B5%81%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo.jpg">
+      <meta itemprop="name" content="warren">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Easter's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          kubesphere搭建流程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-03-21 14:35:57 / 修改时间：15:23:27" itemprop="dateCreated datePublished" datetime="2023-03-21T14:35:57+08:00">2023-03-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%83%A8%E7%BD%B2/" itemprop="url" rel="index">
+                    <span itemprop="name">部署</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>KubeSphere是在Kubernetes之上构建的以应用为中心的企业级分布式容器平台，提供简单易用的操作界面以及向导式操作方式。</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="前提："><a href="#前提：" class="headerlink" title="前提："></a>前提：</h2><ul>
+<li>一个私有的镜像仓库</li>
+<li>一个k8s部署环境 <h3 id="搭建一个私有的镜像仓库"><a href="#搭建一个私有的镜像仓库" class="headerlink" title="搭建一个私有的镜像仓库"></a>搭建一个私有的镜像仓库</h3></li>
+</ul>
+<ol>
+<li><p>创建证书放置目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">mkdir -p certs</span></pre></td></tr></table></figure></li>
+<li><p>生成证书，在字段 <code>Common Name</code> 中需要提供一个域名。例如，本示例中该字段被指定为 <code>dockerhub.kubekey.local</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">openssl req \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">-newkey rsa:4096 -nodes -sha256 -keyout certs&#x2F;domain.key \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">-x509 -days 36500 -out certs&#x2F;domain.crt</span></pre></td></tr></table></figure>
+<p>![[Pasted image 20230320142545.png]]</p>
+</li>
+<li><p>启动<code>docker</code>容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">docker run -d \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  --restart&#x3D;always \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">  --name registry \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">  -v &quot;$(pwd)&quot;&#x2F;certs:&#x2F;certs \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">  -v &#x2F;mnt&#x2F;registry:&#x2F;var&#x2F;lib&#x2F;registry \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">  -e REGISTRY_HTTP_ADDR&#x3D;0.0.0.0:443 \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">  -e REGISTRY_HTTP_TLS_CERTIFICATE&#x3D;&#x2F;certs&#x2F;domain.crt \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">  -e REGISTRY_HTTP_TLS_KEY&#x3D;&#x2F;certs&#x2F;domain.key \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">  -p 443:443 \</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">  registry:2</span></pre></td></tr></table></figure></li>
+</ol>
+<p><em>Docker 使用 <code>/var/lib/docker</code> 作为默认路径来存储所有 Docker 相关文件（包括镜像）。建议您添加附加存储卷，分别给 <code>/var/lib/docker</code> 和 <code>/mnt/registry</code> 挂载至少 <strong>100G</strong>。</em></p>
+<ol start="4">
+<li>配置仓库<br>在<code>/etc/hosts</code>文件中将主机名映射到机器的私有ip地址<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">*.*.*.* dockerhub.kubekey.local</span></pre></td></tr></table></figure>
+复制证书到指定目录，并使 Docker 信任该证书<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">mkdir -p &#x2F;etc&#x2F;docker&#x2F;certs.d&#x2F;dockerhub.kubekey.local</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">cp certs&#x2F;domain.crt &#x2F;etc&#x2F;docker&#x2F;certs.d&#x2F;dockerhub.kubekey.local&#x2F;ca.crt</span></pre></td></tr></table></figure>
+要验证私有证书是否有效，可以先复制一个证书到本地，然后使用<code>docker push</code>和<code>docker pull</code>命令来测试</li>
+</ol>
+<h3 id="搭建k8s部署环境（此处为单节点）"><a href="#搭建k8s部署环境（此处为单节点）" class="headerlink" title="搭建k8s部署环境（此处为单节点）"></a>搭建k8s部署环境（此处为单节点）</h3><h4 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h4><ol>
+<li>环境准备</li>
+</ol>
+<ul>
+<li>关闭防火墙 <code>systemctl stop firewalld</code></li>
+<li>关闭<code>selinux</code> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">sed -i &#39;s&#x2F;enforcing&#x2F;disabled&#x2F;&#39; &#x2F;etc&#x2F;config&#x2F;selinux</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">setenforce 0</span></pre></td></tr></table></figure></li>
+<li>关闭<code>swap</code>：<code>swapoff -a</code></li>
+</ul>
+<ol start="2">
+<li>设置系统主机名<br><code>hostnamectl set-hostname master</code></li>
+<li>设置各机器的<code>/etc/hosts</code><br><code>*.*.*.* master</code></li>
+<li>安装K8s软件包</li>
+<li>创建<code>/etc/sysctl.d/k8s.conf</code>文件，添加以下内容<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">net.bridge.bridge-nf-call-ip6tables &#x3D; 1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">net.bridge.bridge-nf-call-iptables &#x3D; 1</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">net.ipv4.ip_forward &#x3D; 1</span></pre></td></tr></table></figure>
+执行以下命令使其生效<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">modprobe br_netfilter</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">sysctl -p &#x2F;etc&#x2F;sysctl.d&#x2F;k8s.conf</span></pre></td></tr></table></figure></li>
+<li>开启IP转发功能<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">echo &quot;1&quot; &gt; &#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;ip_forward</span></pre></td></tr></table></figure>
+修改文件<code>daemon.json</code><br>设定<code>cgroup=systemd：</code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">&quot;exec-opts&quot;: [&quot;native.cgroupdriver&#x3D;systemd&quot;]</span></pre></td></tr></table></figure>
+修改后执行：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">systemctl restart docker.service</span></pre></td></tr></table></figure></li>
+<li>设置docker和kubelet开机启动：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">systemctl enable docker</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">systemctl enable --now  kubelet.service</span></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h4 id="初始化集群"><a href="#初始化集群" class="headerlink" title="初始化集群"></a>初始化集群</h4><ol>
+<li>生成初版配置文件：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">kubeadm config print init-defaults &gt; kubeadm-init.yaml</span></pre></td></tr></table></figure>
+将 <code>advertiseAddress: 1.2.3.4</code> 修改为本机地址。</li>
+</ol>
+<p>在<code>serviceSubnet</code>上加一行<code>podSubnet:10.244.0.0/16</code></p>
+<p>将 <code>imageRepository: k8s.gcr.io</code> 修改为<code>imageRepository: registry.cn-hangzhou.aliyuncs.com/google_containers</code>（非必须）</p>
+<p>修改<code>/etc/systemd/system/kubelet.service.d/kubeadm.conf</code>文件</p>
+<p>添加：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">--cgroup-driver&#x3D;systemd</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">--cni-bin-dir&#x3D;&#x2F;usr&#x2F;libexec&#x2F;cni</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">--node-ip&#x3D;环境ip</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">--hostname-override&#x3D;master</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">--fail-swap-on&#x3D;false</span></pre></td></tr></table></figure>
+<ol start="2">
+<li>查看kubeadm配置后所需镜像版本：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">kubeadm config images list --config kubeadm-init.yaml</span></pre></td></tr></table></figure></li>
+<li>拉取镜像<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">kubeadm config images pull --config kubeadm-init.yaml</span></pre></td></tr></table></figure></li>
+<li>执行初始化<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">kubeadm init --config kubeadm-init.yaml</span></pre></td></tr></table></figure></li>
+<li>根据生成的日志在master执行如下命令：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">mkdir -p $HOME&#x2F;.kube</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">cp -i &#x2F;etc&#x2F;kubernetes&#x2F;admin.conf $HOME&#x2F;.kube&#x2F;config</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">chown \$(id -u):\$(id -g) $HOME&#x2F;.kube&#x2F;config</span></pre></td></tr></table></figure></li>
+<li>修改<code>/etc/kubernetes/manifests/kube-controller-manager.yaml</code><br>添加：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">- --allocate-node-cidrs&#x3D;true</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">- --cluster-cidr&#x3D;10.244.0.0&#x2F;16</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">- --service-cluster-ip-range&#x3D;10.96.0.0&#x2F;12</span></pre></td></tr></table></figure></li>
+<li>下载<code>flannel</code>配置文件<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">wget https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;coreos&#x2F;flannel&#x2F;master&#x2F;Documentation&#x2F;kube-flannel.yml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">kubectl apply -f kube-flannel.yml</span></pre></td></tr></table></figure></li>
+<li>查看所有<code>pod</code>状态，是否全部<code>running</code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">kubectl get pods -A</span></pre></td></tr></table></figure></li>
+<li>去污点<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">kubectl taint nodes master node-role.kubernetes.io&#x2F;master:NoSchedule-</span></pre></td></tr></table></figure></li>
+<li>功能测试</li>
+</ol>
+<ul>
+<li>新建namespace<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">kubectl create ns hello</span></pre></td></tr></table></figure>
+<h2 id="准备部署kubesphere需要的镜像"><a href="#准备部署kubesphere需要的镜像" class="headerlink" title="准备部署kubesphere需要的镜像"></a>准备部署kubesphere需要的镜像</h2></li>
+</ul>
+<p><strong>下载镜像列表</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">&#96;curl -L -O https:&#x2F;&#x2F;github.com&#x2F;kubesphere&#x2F;ks-installer&#x2F;releases&#x2F;download&#x2F;v3.3.1&#x2F;images-list.txt&#96;</span></pre></td></tr></table></figure>
+<p><strong>下载离线安装脚本并添加执行权限</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">offline-installation-tool.sh</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">chmod +x offline-installation-tool.sh</span></pre></td></tr></table></figure>
+<p><strong>拉取镜像</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">.&#x2F;offline-installation-tool.sh -s -l images-list.txt -d .&#x2F;kubesphere-images&#96;</span></pre></td></tr></table></figure>
+<p><strong>将镜像推送到私有仓库</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">.&#x2F;offline-installation-tool.sh -l images-list.txt -d .&#x2F;kubesphere-images -r dockerhub.kubekey.local&#96;</span></pre></td></tr></table></figure>
+<h2 id="下载部署文件"><a href="#下载部署文件" class="headerlink" title="下载部署文件"></a>下载部署文件</h2><p><strong>下载下面两个文件</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">curl -L -O https:&#x2F;&#x2F;github.com&#x2F;kubesphere&#x2F;ks-installer&#x2F;releases&#x2F;download&#x2F;v3.3.1&#x2F;cluster-configuration.yaml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">curl -L -O https:&#x2F;&#x2F;github.com&#x2F;kubesphere&#x2F;ks-installer&#x2F;releases&#x2F;download&#x2F;v3.3.1&#x2F;kubesphere-installer.yaml</span></pre></td></tr></table></figure>
+
+<p><strong>编辑 <code>cluster-configuration.yaml</code> 添加您的私有镜像仓库。例如，本教程中的仓库地址是 <code>dockerhub.kubekey.local</code>，将它用作 <code>.spec.local_registry</code> 的值，如下所示：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">spec:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">  persistence:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    storageClass: &quot;&quot;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">  authentication:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    jwtSecret: &quot;&quot;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">  local_registry: dockerhub.kubekey.local # Add this line manually; make sure you use your own registry address.</span></pre></td></tr></table></figure>
+
+<p><strong>修改kubesphere-installer.yaml，将ks-install替换为自己的仓库地址</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">sed -i &quot;s#^\s*image: kubesphere.*&#x2F;ks-installer:.*#        image: dockerhub.kubekey.local&#x2F;kubesphere&#x2F;ks-installer:v3.0.0#&quot; kubesphere-installer.yaml</span></pre></td></tr></table></figure>
+
+<h2 id="开始安装"><a href="#开始安装" class="headerlink" title="开始安装"></a>开始安装</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">kubectl apply -f kubesphere-installer.yaml</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">kubectl apply -f cluster-configuration.yaml</span></pre></td></tr></table></figure>
+<h2 id="结束安装后可以查看pod日志查看是否部署成功，出现如下内容则部署成功"><a href="#结束安装后可以查看pod日志查看是否部署成功，出现如下内容则部署成功" class="headerlink" title="结束安装后可以查看pod日志查看是否部署成功，出现如下内容则部署成功"></a>结束安装后可以查看pod日志查看是否部署成功，出现如下内容则部署成功</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">#####################################################</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">###              Welcome to KubeSphere!           ###</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">#####################################################</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">Console: http:&#x2F;&#x2F;192.168.0.2:30880</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">Account: admin</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">Password: P@88w0rd</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">NOTES：</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">  1. After logging into the console, please check the</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">     monitoring status of service components in</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">     the &quot;Cluster Management&quot;. If any service is not</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">     ready, please wait patiently until all components</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">     are ready.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">  2. Please modify the default password after login.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">#####################################################</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;kubesphere.io             20xx-xx-xx xx:xx:xx</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">#####################################################</span></pre></td></tr></table></figure>
+<h2 id="访问控制台"><a href="#访问控制台" class="headerlink" title="访问控制台"></a>访问控制台</h2><p>通过<code>http://{IP}:30880</code>访问控制台，默认账号密码admin/P@88w0rd访问kubesphere的默认控制台。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/kubesphere/" rel="tag"># kubesphere</a>
+              <a href="/tags/k8s/" rel="tag"># k8s</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/03/17/hello-world/" rel="prev" title="前言">
+      <i class="fa fa-chevron-left"></i> 前言
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前提："><span class="nav-number">1.</span> <span class="nav-text">前提：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#搭建一个私有的镜像仓库"><span class="nav-number">1.1.</span> <span class="nav-text">搭建一个私有的镜像仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#搭建k8s部署环境（此处为单节点）"><span class="nav-number">1.2.</span> <span class="nav-text">搭建k8s部署环境（此处为单节点）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#环境准备"><span class="nav-number">1.2.1.</span> <span class="nav-text">环境准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#初始化集群"><span class="nav-number">1.2.2.</span> <span class="nav-text">初始化集群</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备部署kubesphere需要的镜像"><span class="nav-number">2.</span> <span class="nav-text">准备部署kubesphere需要的镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载部署文件"><span class="nav-number">3.</span> <span class="nav-text">下载部署文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开始安装"><span class="nav-number">4.</span> <span class="nav-text">开始安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结束安装后可以查看pod日志查看是否部署成功，出现如下内容则部署成功"><span class="nav-number">5.</span> <span class="nav-text">结束安装后可以查看pod日志查看是否部署成功，出现如下内容则部署成功</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#访问控制台"><span class="nav-number">6.</span> <span class="nav-text">访问控制台</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="warren"
+      src="/images/logo.jpg">
+  <p class="site-author-name" itemprop="name">warren</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">warren</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.css">
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.js"></script><script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

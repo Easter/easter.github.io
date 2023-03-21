@@ -1,6 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>kubesphere搭建流程</title>
+    <url>/2023/03/21/kubesphere%E6%90%AD%E5%BB%BA%E6%B5%81%E7%A8%8B/</url>
+    <content><![CDATA[<blockquote>
+<p>KubeSphere是在Kubernetes之上构建的以应用为中心的企业级分布式容器平台，提供简单易用的操作界面以及向导式操作方式。</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="前提："><a href="#前提：" class="headerlink" title="前提："></a>前提：</h2><ul>
+<li>一个私有的镜像仓库</li>
+<li>一个k8s部署环境 <h3 id="搭建一个私有的镜像仓库"><a href="#搭建一个私有的镜像仓库" class="headerlink" title="搭建一个私有的镜像仓库"></a>搭建一个私有的镜像仓库</h3></li>
+</ul>
+<ol>
+<li><p>创建证书放置目录</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir -p certs</span></pre></td></tr></table></figure></li>
+<li><p>生成证书，在字段 <code>Common Name</code> 中需要提供一个域名。例如，本示例中该字段被指定为 <code>dockerhub.kubekey.local</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">openssl req \</span></pre></td></tr><tr><td class="code"><pre><span class="line">-newkey rsa:4096 -nodes -sha256 -keyout certs&#x2F;domain.key \</span></pre></td></tr><tr><td class="code"><pre><span class="line">-x509 -days 36500 -out certs&#x2F;domain.crt</span></pre></td></tr></table></figure>
+<p>![[Pasted image 20230320142545.png]]</p>
+</li>
+<li><p>启动<code>docker</code>容器</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -d \</span></pre></td></tr><tr><td class="code"><pre><span class="line">  --restart&#x3D;always \</span></pre></td></tr><tr><td class="code"><pre><span class="line">  --name registry \</span></pre></td></tr><tr><td class="code"><pre><span class="line">  -v &quot;$(pwd)&quot;&#x2F;certs:&#x2F;certs \</span></pre></td></tr><tr><td class="code"><pre><span class="line">  -v &#x2F;mnt&#x2F;registry:&#x2F;var&#x2F;lib&#x2F;registry \</span></pre></td></tr><tr><td class="code"><pre><span class="line">  -e REGISTRY_HTTP_ADDR&#x3D;0.0.0.0:443 \</span></pre></td></tr><tr><td class="code"><pre><span class="line">  -e REGISTRY_HTTP_TLS_CERTIFICATE&#x3D;&#x2F;certs&#x2F;domain.crt \</span></pre></td></tr><tr><td class="code"><pre><span class="line">  -e REGISTRY_HTTP_TLS_KEY&#x3D;&#x2F;certs&#x2F;domain.key \</span></pre></td></tr><tr><td class="code"><pre><span class="line">  -p 443:443 \</span></pre></td></tr><tr><td class="code"><pre><span class="line">  registry:2</span></pre></td></tr></table></figure></li>
+</ol>
+<p><em>Docker 使用 <code>/var/lib/docker</code> 作为默认路径来存储所有 Docker 相关文件（包括镜像）。建议您添加附加存储卷，分别给 <code>/var/lib/docker</code> 和 <code>/mnt/registry</code> 挂载至少 <strong>100G</strong>。</em></p>
+<ol start="4">
+<li>配置仓库<br>在<code>/etc/hosts</code>文件中将主机名映射到机器的私有ip地址<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">*.*.*.* dockerhub.kubekey.local</span></pre></td></tr></table></figure>
+复制证书到指定目录，并使 Docker 信任该证书<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir -p &#x2F;etc&#x2F;docker&#x2F;certs.d&#x2F;dockerhub.kubekey.local</span></pre></td></tr><tr><td class="code"><pre><span class="line">cp certs&#x2F;domain.crt &#x2F;etc&#x2F;docker&#x2F;certs.d&#x2F;dockerhub.kubekey.local&#x2F;ca.crt</span></pre></td></tr></table></figure>
+要验证私有证书是否有效，可以先复制一个证书到本地，然后使用<code>docker push</code>和<code>docker pull</code>命令来测试</li>
+</ol>
+<h3 id="搭建k8s部署环境（此处为单节点）"><a href="#搭建k8s部署环境（此处为单节点）" class="headerlink" title="搭建k8s部署环境（此处为单节点）"></a>搭建k8s部署环境（此处为单节点）</h3><h4 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h4><ol>
+<li>环境准备</li>
+</ol>
+<ul>
+<li>关闭防火墙 <code>systemctl stop firewalld</code></li>
+<li>关闭<code>selinux</code> <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sed -i &#39;s&#x2F;enforcing&#x2F;disabled&#x2F;&#39; &#x2F;etc&#x2F;config&#x2F;selinux</span></pre></td></tr><tr><td class="code"><pre><span class="line">setenforce 0</span></pre></td></tr></table></figure></li>
+<li>关闭<code>swap</code>：<code>swapoff -a</code></li>
+</ul>
+<ol start="2">
+<li>设置系统主机名<br><code>hostnamectl set-hostname master</code></li>
+<li>设置各机器的<code>/etc/hosts</code><br><code>*.*.*.* master</code></li>
+<li>安装K8s软件包</li>
+<li>创建<code>/etc/sysctl.d/k8s.conf</code>文件，添加以下内容<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">net.bridge.bridge-nf-call-ip6tables &#x3D; 1</span></pre></td></tr><tr><td class="code"><pre><span class="line">net.bridge.bridge-nf-call-iptables &#x3D; 1</span></pre></td></tr><tr><td class="code"><pre><span class="line">net.ipv4.ip_forward &#x3D; 1</span></pre></td></tr></table></figure>
+执行以下命令使其生效<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">modprobe br_netfilter</span></pre></td></tr><tr><td class="code"><pre><span class="line">sysctl -p &#x2F;etc&#x2F;sysctl.d&#x2F;k8s.conf</span></pre></td></tr></table></figure></li>
+<li>开启IP转发功能<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo &quot;1&quot; &gt; &#x2F;proc&#x2F;sys&#x2F;net&#x2F;ipv4&#x2F;ip_forward</span></pre></td></tr></table></figure>
+修改文件<code>daemon.json</code><br>设定<code>cgroup=systemd：</code><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&quot;exec-opts&quot;: [&quot;native.cgroupdriver&#x3D;systemd&quot;]</span></pre></td></tr></table></figure>
+修改后执行：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl daemon-reload</span></pre></td></tr><tr><td class="code"><pre><span class="line">systemctl restart docker.service</span></pre></td></tr></table></figure></li>
+<li>设置docker和kubelet开机启动：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl enable docker</span></pre></td></tr><tr><td class="code"><pre><span class="line">systemctl enable --now  kubelet.service</span></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h4 id="初始化集群"><a href="#初始化集群" class="headerlink" title="初始化集群"></a>初始化集群</h4><ol>
+<li>生成初版配置文件：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kubeadm config print init-defaults &gt; kubeadm-init.yaml</span></pre></td></tr></table></figure>
+将 <code>advertiseAddress: 1.2.3.4</code> 修改为本机地址。</li>
+</ol>
+<p>在<code>serviceSubnet</code>上加一行<code>podSubnet:10.244.0.0/16</code></p>
+<p>将 <code>imageRepository: k8s.gcr.io</code> 修改为<code>imageRepository: registry.cn-hangzhou.aliyuncs.com/google_containers</code>（非必须）</p>
+<p>修改<code>/etc/systemd/system/kubelet.service.d/kubeadm.conf</code>文件</p>
+<p>添加：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">--cgroup-driver&#x3D;systemd</span></pre></td></tr><tr><td class="code"><pre><span class="line">--cni-bin-dir&#x3D;&#x2F;usr&#x2F;libexec&#x2F;cni</span></pre></td></tr><tr><td class="code"><pre><span class="line">--node-ip&#x3D;环境ip</span></pre></td></tr><tr><td class="code"><pre><span class="line">--hostname-override&#x3D;master</span></pre></td></tr><tr><td class="code"><pre><span class="line">--fail-swap-on&#x3D;false</span></pre></td></tr></table></figure>
+<ol start="2">
+<li>查看kubeadm配置后所需镜像版本：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kubeadm config images list --config kubeadm-init.yaml</span></pre></td></tr></table></figure></li>
+<li>拉取镜像<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kubeadm config images pull --config kubeadm-init.yaml</span></pre></td></tr></table></figure></li>
+<li>执行初始化<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kubeadm init --config kubeadm-init.yaml</span></pre></td></tr></table></figure></li>
+<li>根据生成的日志在master执行如下命令：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mkdir -p $HOME&#x2F;.kube</span></pre></td></tr><tr><td class="code"><pre><span class="line">cp -i &#x2F;etc&#x2F;kubernetes&#x2F;admin.conf $HOME&#x2F;.kube&#x2F;config</span></pre></td></tr><tr><td class="code"><pre><span class="line">chown \$(id -u):\$(id -g) $HOME&#x2F;.kube&#x2F;config</span></pre></td></tr></table></figure></li>
+<li>修改<code>/etc/kubernetes/manifests/kube-controller-manager.yaml</code><br>添加：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">- --allocate-node-cidrs&#x3D;true</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">- --cluster-cidr&#x3D;10.244.0.0&#x2F;16</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">- --service-cluster-ip-range&#x3D;10.96.0.0&#x2F;12</span></pre></td></tr></table></figure></li>
+<li>下载<code>flannel</code>配置文件<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;coreos&#x2F;flannel&#x2F;master&#x2F;Documentation&#x2F;kube-flannel.yml</span></pre></td></tr><tr><td class="code"><pre><span class="line">kubectl apply -f kube-flannel.yml</span></pre></td></tr></table></figure></li>
+<li>查看所有<code>pod</code>状态，是否全部<code>running</code><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kubectl get pods -A</span></pre></td></tr></table></figure></li>
+<li>去污点<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kubectl taint nodes master node-role.kubernetes.io&#x2F;master:NoSchedule-</span></pre></td></tr></table></figure></li>
+<li>功能测试</li>
+</ol>
+<ul>
+<li>新建namespace<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kubectl create ns hello</span></pre></td></tr></table></figure>
+<h2 id="准备部署kubesphere需要的镜像"><a href="#准备部署kubesphere需要的镜像" class="headerlink" title="准备部署kubesphere需要的镜像"></a>准备部署kubesphere需要的镜像</h2></li>
+</ul>
+<p><strong>下载镜像列表</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#96;curl -L -O https:&#x2F;&#x2F;github.com&#x2F;kubesphere&#x2F;ks-installer&#x2F;releases&#x2F;download&#x2F;v3.3.1&#x2F;images-list.txt&#96;</span></pre></td></tr></table></figure>
+<p><strong>下载离线安装脚本并添加执行权限</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">offline-installation-tool.sh</span></pre></td></tr><tr><td class="code"><pre><span class="line">chmod +x offline-installation-tool.sh</span></pre></td></tr></table></figure>
+<p><strong>拉取镜像</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.&#x2F;offline-installation-tool.sh -s -l images-list.txt -d .&#x2F;kubesphere-images&#96;</span></pre></td></tr></table></figure>
+<p><strong>将镜像推送到私有仓库</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.&#x2F;offline-installation-tool.sh -l images-list.txt -d .&#x2F;kubesphere-images -r dockerhub.kubekey.local&#96;</span></pre></td></tr></table></figure>
+<h2 id="下载部署文件"><a href="#下载部署文件" class="headerlink" title="下载部署文件"></a>下载部署文件</h2><p><strong>下载下面两个文件</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl -L -O https:&#x2F;&#x2F;github.com&#x2F;kubesphere&#x2F;ks-installer&#x2F;releases&#x2F;download&#x2F;v3.3.1&#x2F;cluster-configuration.yaml</span></pre></td></tr><tr><td class="code"><pre><span class="line">curl -L -O https:&#x2F;&#x2F;github.com&#x2F;kubesphere&#x2F;ks-installer&#x2F;releases&#x2F;download&#x2F;v3.3.1&#x2F;kubesphere-installer.yaml</span></pre></td></tr></table></figure>
+
+<p><strong>编辑 <code>cluster-configuration.yaml</code> 添加您的私有镜像仓库。例如，本教程中的仓库地址是 <code>dockerhub.kubekey.local</code>，将它用作 <code>.spec.local_registry</code> 的值，如下所示：</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">spec:</span></pre></td></tr><tr><td class="code"><pre><span class="line">  persistence:</span></pre></td></tr><tr><td class="code"><pre><span class="line">    storageClass: &quot;&quot;</span></pre></td></tr><tr><td class="code"><pre><span class="line">  authentication:</span></pre></td></tr><tr><td class="code"><pre><span class="line">    jwtSecret: &quot;&quot;</span></pre></td></tr><tr><td class="code"><pre><span class="line">  local_registry: dockerhub.kubekey.local # Add this line manually; make sure you use your own registry address.</span></pre></td></tr></table></figure>
+
+<p><strong>修改kubesphere-installer.yaml，将ks-install替换为自己的仓库地址</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sed -i &quot;s#^\s*image: kubesphere.*&#x2F;ks-installer:.*#        image: dockerhub.kubekey.local&#x2F;kubesphere&#x2F;ks-installer:v3.0.0#&quot; kubesphere-installer.yaml</span></pre></td></tr></table></figure>
+
+<h2 id="开始安装"><a href="#开始安装" class="headerlink" title="开始安装"></a>开始安装</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kubectl apply -f kubesphere-installer.yaml</span></pre></td></tr><tr><td class="code"><pre><span class="line">kubectl apply -f cluster-configuration.yaml</span></pre></td></tr></table></figure>
+<h2 id="结束安装后可以查看pod日志查看是否部署成功，出现如下内容则部署成功"><a href="#结束安装后可以查看pod日志查看是否部署成功，出现如下内容则部署成功" class="headerlink" title="结束安装后可以查看pod日志查看是否部署成功，出现如下内容则部署成功"></a>结束安装后可以查看pod日志查看是否部署成功，出现如下内容则部署成功</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#####################################################</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">###              Welcome to KubeSphere!           ###</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">#####################################################</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">Console: http:&#x2F;&#x2F;192.168.0.2:30880</span></pre></td></tr><tr><td class="code"><pre><span class="line">Account: admin</span></pre></td></tr><tr><td class="code"><pre><span class="line">Password: P@88w0rd</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">NOTES：</span></pre></td></tr><tr><td class="code"><pre><span class="line">  1. After logging into the console, please check the</span></pre></td></tr><tr><td class="code"><pre><span class="line">     monitoring status of service components in</span></pre></td></tr><tr><td class="code"><pre><span class="line">     the &quot;Cluster Management&quot;. If any service is not</span></pre></td></tr><tr><td class="code"><pre><span class="line">     ready, please wait patiently until all components</span></pre></td></tr><tr><td class="code"><pre><span class="line">     are ready.</span></pre></td></tr><tr><td class="code"><pre><span class="line">  2. Please modify the default password after login.</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">#####################################################</span></pre></td></tr><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;kubesphere.io             20xx-xx-xx xx:xx:xx</span></pre></td></tr><tr><td class="code"><pre><span class="line">#####################################################</span></pre></td></tr></table></figure>
+<h2 id="访问控制台"><a href="#访问控制台" class="headerlink" title="访问控制台"></a>访问控制台</h2><p>通过<code>http://{IP}:30880</code>访问控制台，默认账号密码admin/P@88w0rd访问kubesphere的默认控制台。</p>
+]]></content>
+      <categories>
+        <category>部署</category>
+      </categories>
+      <tags>
+        <tag>kubesphere</tag>
+        <tag>k8s</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>前言</title>
     <url>/2023/03/17/hello-world/</url>
     <content><![CDATA[<blockquote>
@@ -511,42 +613,6 @@
       </tags>
   </entry>
   <entry>
-    <title>numpy中meshgrid函数</title>
-    <url>/2019/12/04/numpy%E4%B8%ADmeshgrid%E5%87%BD%E6%95%B0/</url>
-    <content><![CDATA[<p>numpy中meshgrid函数</p>
-<p>先来看官方文档：<br> <a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.meshgrid.html" target="_blank" rel="noopener">https://docs.scipy.org/doc/numpy/reference/generated/numpy.meshgrid.html</a><br>功能：从一个坐标向量中返回一个坐标矩阵<br>参数：  </p>
-<ul>
-<li>x1，x2，x3：一维的数组代表网格的坐标</li>
-<li>indexing：{‘xy’,’ij’}，笛卡尔坐标’xy’或者矩阵’ij’下标作为输出，默认是笛卡尔坐标</li>
-<li>sparse：bool类型，如果是True，返回一个稀疏矩阵保存在内存中，默认为False</li>
-<li>copy： bool类型，如果是False，返回一个原始数组的视图保存在内存中，默认是True。如果，sparse和copy都为False，将有可能返回一个不连续的数组。而且，如果广播数组的元素超过一个，可以使用一个独立的内存。如果想要对这个数组进行写操作，请先拷贝这个数组。 </li>
-</ul>
-<p>看完官方文档之后还是一脸懵逼？？？？直接上例子解释</p>
-<a id="more"></a>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">1</span>]: nx,ny = (<span class="number">3</span>,<span class="number">2</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">4</span>]: x = np.linspace(<span class="number">1</span>,<span class="number">2</span>,nx) <span class="comment"># [1,1.5,2]</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">6</span>]: y = np.linspace(<span class="number">1</span>,<span class="number">2</span>,ny) <span class="comment"># [1,2]</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">7</span>]: xv,yv = np.meshgrid(x,y)</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">10</span>]: xv</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">10</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">1.</span> , <span class="number">1.5</span>, <span class="number">2.</span> ],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">1.</span> , <span class="number">1.5</span>, <span class="number">2.</span> ]])</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">11</span>]: yv</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">11</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">2.</span>, <span class="number">2.</span>, <span class="number">2.</span>]])</span></pre></td></tr></table></figure>
-
-<p>上面的例子可以看出是将两个输入的数组进行拓展，前一个拓展与后一个有关，后一个拓展与前一个有关。前一个是竖轴拓展，后一个是横轴拓展。  </p>
-<p>因为 y 的长度为2，所以 x 竖向被拓展成原来的两倍。同理，y被拓展成横向的三倍 ，输入由原来的数组变成了矩阵，下面我们来看一下表格矩阵的坐标：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">1</span>]: xv.ravel()</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">1</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([<span class="number">1.</span>,<span class="number">1.5</span>,<span class="number">2.</span>,<span class="number">1.</span>,<span class="number">1.5</span>,<span class="number">2.</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">2</span>]: yv.ravel()</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">2</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">2.</span>, <span class="number">2.</span>, <span class="number">2.</span>])</span></pre></td></tr></table></figure>
-
-<p>ravel函数的作用是将矩阵变成一个一维的数组，其中xv.ravel()表示x轴的坐标，yv.ravel()表示y轴的坐标，我们将x轴与y轴的坐标一一对应，就形成了一个网格的坐标  </p>
-<p>如果将sparse参数设置为True，就不会向上面一样拓展了，它产生的网格不是所有的坐标，只有网格对角线上的坐标。  </p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">1</span>]: xv,yv = np.meshgrid(x,y,sparse=<span class="literal">True</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">2</span>]: xv</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">2</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">1.</span> , <span class="number">1.5</span>, <span class="number">2.</span> ]])</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">3</span>]: yv</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">3</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">1.</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">2.</span>]])</span></pre></td></tr></table></figure>
-
-<p>补充，这里的数组参数也可以是3个，相应的会产生3个矩阵。实践出真知，最好还是实践一下</p>
-]]></content>
-      <categories>
-        <category>python</category>
-        <category>numpy</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-        <tag>numpy</tag>
-        <tag>数据分析</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>numpy average与mean区别</title>
     <url>/2019/12/04/numpy%20average%E4%B8%8Emean%E5%8C%BA%E5%88%AB,/</url>
     <content><![CDATA[<blockquote>
@@ -578,6 +644,42 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">17</span>]: np.average(df[<span class="string">'data1'</span>],weights=df[<span class="string">'data2'</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">17</span>]: <span class="number">-1.572923774192011</span></span></pre></td></tr></table></figure>
 
 <p>得出结果</p>
+]]></content>
+      <categories>
+        <category>python</category>
+        <category>numpy</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>numpy</tag>
+        <tag>数据分析</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>numpy中meshgrid函数</title>
+    <url>/2019/12/04/numpy%E4%B8%ADmeshgrid%E5%87%BD%E6%95%B0/</url>
+    <content><![CDATA[<p>numpy中meshgrid函数</p>
+<p>先来看官方文档：<br> <a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.meshgrid.html" target="_blank" rel="noopener">https://docs.scipy.org/doc/numpy/reference/generated/numpy.meshgrid.html</a><br>功能：从一个坐标向量中返回一个坐标矩阵<br>参数：  </p>
+<ul>
+<li>x1，x2，x3：一维的数组代表网格的坐标</li>
+<li>indexing：{‘xy’,’ij’}，笛卡尔坐标’xy’或者矩阵’ij’下标作为输出，默认是笛卡尔坐标</li>
+<li>sparse：bool类型，如果是True，返回一个稀疏矩阵保存在内存中，默认为False</li>
+<li>copy： bool类型，如果是False，返回一个原始数组的视图保存在内存中，默认是True。如果，sparse和copy都为False，将有可能返回一个不连续的数组。而且，如果广播数组的元素超过一个，可以使用一个独立的内存。如果想要对这个数组进行写操作，请先拷贝这个数组。 </li>
+</ul>
+<p>看完官方文档之后还是一脸懵逼？？？？直接上例子解释</p>
+<a id="more"></a>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">1</span>]: nx,ny = (<span class="number">3</span>,<span class="number">2</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">4</span>]: x = np.linspace(<span class="number">1</span>,<span class="number">2</span>,nx) <span class="comment"># [1,1.5,2]</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">6</span>]: y = np.linspace(<span class="number">1</span>,<span class="number">2</span>,ny) <span class="comment"># [1,2]</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">7</span>]: xv,yv = np.meshgrid(x,y)</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">10</span>]: xv</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">10</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">1.</span> , <span class="number">1.5</span>, <span class="number">2.</span> ],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">1.</span> , <span class="number">1.5</span>, <span class="number">2.</span> ]])</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">11</span>]: yv</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">11</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">2.</span>, <span class="number">2.</span>, <span class="number">2.</span>]])</span></pre></td></tr></table></figure>
+
+<p>上面的例子可以看出是将两个输入的数组进行拓展，前一个拓展与后一个有关，后一个拓展与前一个有关。前一个是竖轴拓展，后一个是横轴拓展。  </p>
+<p>因为 y 的长度为2，所以 x 竖向被拓展成原来的两倍。同理，y被拓展成横向的三倍 ，输入由原来的数组变成了矩阵，下面我们来看一下表格矩阵的坐标：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">1</span>]: xv.ravel()</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">1</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([<span class="number">1.</span>,<span class="number">1.5</span>,<span class="number">2.</span>,<span class="number">1.</span>,<span class="number">1.5</span>,<span class="number">2.</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">2</span>]: yv.ravel()</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">2</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">2.</span>, <span class="number">2.</span>, <span class="number">2.</span>])</span></pre></td></tr></table></figure>
+
+<p>ravel函数的作用是将矩阵变成一个一维的数组，其中xv.ravel()表示x轴的坐标，yv.ravel()表示y轴的坐标，我们将x轴与y轴的坐标一一对应，就形成了一个网格的坐标  </p>
+<p>如果将sparse参数设置为True，就不会向上面一样拓展了，它产生的网格不是所有的坐标，只有网格对角线上的坐标。  </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">In [<span class="number">1</span>]: xv,yv = np.meshgrid(x,y,sparse=<span class="literal">True</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">2</span>]: xv</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">2</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">1.</span> , <span class="number">1.5</span>, <span class="number">2.</span> ]])</span></pre></td></tr><tr><td class="code"><pre><span class="line">In [<span class="number">3</span>]: yv</span></pre></td></tr><tr><td class="code"><pre><span class="line">Out[<span class="number">3</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">array([[<span class="number">1.</span>],</span></pre></td></tr><tr><td class="code"><pre><span class="line">       [<span class="number">2.</span>]])</span></pre></td></tr></table></figure>
+
+<p>补充，这里的数组参数也可以是3个，相应的会产生3个矩阵。实践出真知，最好还是实践一下</p>
 ]]></content>
       <categories>
         <category>python</category>

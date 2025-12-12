@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2023/03/17/hello-world/</loc>
+    
+    <lastmod>2025-12-12</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2023/03/21/kubesphere%E6%90%AD%E5%BB%BA%E6%B5%81%E7%A8%8B/</loc>
     
     <lastmod>2023-03-21</lastmod>
@@ -12,15 +21,6 @@
   
   <url>
     <loc>http://yoursite.com/2023/03/17/linux%E7%BB%99root%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%89%A9%E5%AE%B9%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E6%B3%95/</loc>
-    
-    <lastmod>2023-03-17</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2023/03/17/hello-world/</loc>
     
     <lastmod>2023-03-17</lastmod>
     

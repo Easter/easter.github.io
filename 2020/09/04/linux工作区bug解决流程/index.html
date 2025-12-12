@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Lato:300,300italic,400,400italic,700,700italic|PingFang SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: 'YQWVT5TBW9',
+      apiKey: 'c2e8e95e326e549b98d7b21074d18c4a',
+      indexName: 'blog_search',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="在kylin10 V10操作系统中存在右键任务栏，显示工作区相关内容的bug，本文介绍如何解决">
+<meta property="og:type" content="article">
+<meta property="og:title" content=" linux工作区bug解决流程">
+<meta property="og:url" content="http://yoursite.com/2020/09/04/linux%E5%B7%A5%E4%BD%9C%E5%8C%BAbug%E8%A7%A3%E5%86%B3%E6%B5%81%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Easter&#39;s blog">
+<meta property="og:description" content="在kylin10 V10操作系统中存在右键任务栏，显示工作区相关内容的bug，本文介绍如何解决">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-04T02:46:36.000Z">
+<meta property="article:modified_time" content="2020-09-06T14:32:02.000Z">
+<meta property="article:author" content="warren">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="bug解决流程">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/09/04/linux%E5%B7%A5%E4%BD%9C%E5%8C%BAbug%E8%A7%A3%E5%86%B3%E6%B5%81%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title> linux工作区bug解决流程 | Easter's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Easter's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Easter's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">数据分析</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input" id="search-input"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+  
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/04/linux%E5%B7%A5%E4%BD%9C%E5%8C%BAbug%E8%A7%A3%E5%86%B3%E6%B5%81%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo.jpg">
+      <meta itemprop="name" content="warren">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Easter's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+           linux工作区bug解决流程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-09-04 10:46:36" itemprop="dateCreated datePublished" datetime="2020-09-04T10:46:36+08:00">2020-09-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-06 22:32:02" itemprop="dateModified" datetime="2020-09-06T22:32:02+08:00">2020-09-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>在kylin10 V10操作系统中存在右键任务栏，显示工作区相关内容的bug，本文介绍如何解决</p>
+</blockquote>
+<span id="more"></span>
+
+<h4 id="定位问题"><a href="#定位问题" class="headerlink" title="定位问题"></a>定位问题</h4><p>查找rpm包的基本流程在之前的文章中有提到。本篇也算是将理论实践了一番。感兴趣的可以看一下<br>由于任务区存在汉化功能。可以直接在/usr/share/locale中直接查找关键字</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/share/locale</span><br><span class="line">grep -r &quot;仅在此工作区显示&quot;</span><br></pre></td></tr></table></figure>
+
+<p>然后就可以搜索到相应的汉化.mo文件<br>找到相关文件之后，我们就可以通过rpm命令来找到是哪个rpm包中存在此文件。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -qf /usr/share/locale/XXX (XXX指的是上面查找到的文件名)</span><br></pre></td></tr></table></figure>
+
+<p>知道了是哪个rpm包支持此功能，我们就可以通过rpm命令找到src源码包名</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -qi XXX（XXX指的是上面提到的rpm包名）</span><br></pre></td></tr></table></figure>
+
+<p>至此，就可以定位到工作区源码包。</p>
+<h4 id="定位并屏蔽源代码"><a href="#定位并屏蔽源代码" class="headerlink" title="定位并屏蔽源代码"></a>定位并屏蔽源代码</h4><p><strong>确定是哪个模块负责工作区，使用关键字进行搜索</strong></p>
+<ul>
+<li>使用grep命令查找关键字</li>
+<li>通过搞清代码结构，可以尝试，但是过于复杂，时间可能不够用</li>
+</ul>
+<p>这里我们采用第一种方法</p>
+<p><code>grep -r &quot;_Only On This Workspace&quot;</code></p>
+<p>可以定位到源码在哪里，由于此bug逻辑比较简单。直接将搜索到的代码模块屏蔽即可</p>
+<h4 id="生成patch重新编译"><a href="#生成patch重新编译" class="headerlink" title="生成patch重新编译"></a>生成patch重新编译</h4><p>制作patch文件<br>通过git format-patch HEAD^生成补丁，patch文件里可以有文件对比的差异。<br>打patch步骤如下：</p>
+<ul>
+<li><p>获取源码，通过rpm ivh xxx.src.rpm，可以在家目录中生成rpmbuild目录，并生成SOURCE及SPEC目录。分别存放.tar包以及.spec文件</p>
+</li>
+<li><p>展开源码包，进入SPEC目录，通过rpmbuild -bp xxx.spec命令，在rpmbuild目录下生成BUILD目录，并解压.tar文件到BUILD目录下获取到源码</p>
+</li>
+<li><p>生成parch文件，使用git format-patch生成patch文件</p>
+</li>
+<li><ul>
+<li>首先在BUILD目录中生成git仓库，使用git init命令</li>
+<li>接下来，追踪本地所有源代码git add –all</li>
+<li>然后，使用git commit -m “提交描述” 将源代码提交到仓库</li>
+<li>下一步，修改源码，自行vim操作，然后git add –all 提交更改，之后git commit -m “修改描述”</li>
+<li>生成patch文件，git format-patch HEAD^</li>
+<li>最后，复制patch文件~/rpmbuild/SOURCE中</li>
+</ul>
+</li>
+<li><p>修改spec文件，将patch文件添加进去。此处为添加patch</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Begin add by XXX</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Patch0:xxx.patch</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">End add by XXX</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>将补丁打入，其中注意其中的-p1（路径问题，可以网上搜索一下）</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">%patch0 p1 -b .inline-icons</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">%patch0 p1</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>修改changelog，注意格式问题</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">* Wed Aug 19 2020 warren &lt;weiyuan@kylinos.cn&gt; 2.31.0-1</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">- add patch xxx(尽量详细)</span></span><br></pre></td></tr></table></figure>
+
+<p>​    完成上述过程后已经对源码进行spec文件修改，相应的Patch文件已经放入SOURCE文件中。可以运行 rpmbuild -bp xxx.spec文件，查看BUILD中源码是否被修改</p>
+<ul>
+<li>rpm -ba xxx.spec 重新编译所有的包</li>
+</ul>
+<h4 id="重新安装"><a href="#重新安装" class="headerlink" title="重新安装"></a>重新安装</h4><p>rpm -e xxx.rpm –nodeps ，不管依赖直接卸载rpm包<br>安装后生成的rpm包，rpm -ivh xxx.rpm<br>重启reboot</p>
+<p>完！</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/bug%E8%A7%A3%E5%86%B3%E6%B5%81%E7%A8%8B/" rel="tag"># bug解决流程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/02/%E6%90%AD%E5%BB%BAovirt-engine%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B/" rel="prev" title=" 搭建ovirt-engine基本流程 ">
+      <i class="fa fa-chevron-left"></i>  搭建ovirt-engine基本流程 
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/12/%E5%A6%82%E4%BD%95%E5%AE%9A%E5%88%B6centOS7%E7%B3%BB%E7%BB%9F/" rel="next" title="如何定制centOS7系统">
+      如何定制centOS7系统 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%BD%8D%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">定位问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%BD%8D%E5%B9%B6%E5%B1%8F%E8%94%BD%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">定位并屏蔽源代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%9F%E6%88%90patch%E9%87%8D%E6%96%B0%E7%BC%96%E8%AF%91"><span class="nav-number">3.</span> <span class="nav-text">生成patch重新编译</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E6%96%B0%E5%AE%89%E8%A3%85"><span class="nav-number">4.</span> <span class="nav-text">重新安装</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="warren"
+      src="/images/logo.jpg">
+  <p class="site-author-name" itemprop="name">warren</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">warren</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v7.1.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.css">
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

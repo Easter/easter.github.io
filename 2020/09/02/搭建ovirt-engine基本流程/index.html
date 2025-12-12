@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Lato:300,300italic,400,400italic,700,700italic|PingFang SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: 'YQWVT5TBW9',
+      apiKey: 'c2e8e95e326e549b98d7b21074d18c4a',
+      indexName: 'blog_search',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.json',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="ovirt是红帽虚拟化产品，其中由两部分组成，ovirt-engine及ovirt-node。此文介绍ovirt-engine的安装教程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content=" 搭建ovirt-engine基本流程 ">
+<meta property="og:url" content="http://yoursite.com/2020/09/02/%E6%90%AD%E5%BB%BAovirt-engine%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Easter&#39;s blog">
+<meta property="og:description" content="ovirt是红帽虚拟化产品，其中由两部分组成，ovirt-engine及ovirt-node。此文介绍ovirt-engine的安装教程。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2020/09/02/%E6%90%AD%E5%BB%BAovirt-engine%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B/images/centos7_64.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/09/02/%E6%90%AD%E5%BB%BAovirt-engine%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B/images/ovirt-engine.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/02/%E6%90%AD%E5%BB%BAovirt-engine%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B/images/ovirt%E4%B8%BB%E9%A1%B5.png">
+<meta property="article:published_time" content="2020-09-02T06:10:42.000Z">
+<meta property="article:modified_time" content="2020-09-02T08:00:20.000Z">
+<meta property="article:author" content="warren">
+<meta property="article:tag" content="ovirt">
+<meta property="article:tag" content="虚拟化">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/09/02/%E6%90%AD%E5%BB%BAovirt-engine%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B/images/centos7_64.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2020/09/02/%E6%90%AD%E5%BB%BAovirt-engine%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title> 搭建ovirt-engine基本流程  | Easter's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Easter's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Easter's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">数据分析</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input" id="search-input"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+  
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/02/%E6%90%AD%E5%BB%BAovirt-engine%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo.jpg">
+      <meta itemprop="name" content="warren">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Easter's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+           搭建ovirt-engine基本流程 
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-09-02 14:10:42 / 修改时间：16:00:20" itemprop="dateCreated datePublished" datetime="2020-09-02T14:10:42+08:00">2020-09-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>ovirt是红帽虚拟化产品，其中由两部分组成，ovirt-engine及ovirt-node。此文介绍ovirt-engine的安装教程。</p>
+</blockquote>
+<span id="more"></span>
+
+<h4 id="系统安装"><a href="#系统安装" class="headerlink" title="系统安装"></a>系统安装</h4><p>在VMware上安装CentOS7_64位<br>国内阿里站点：<a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/centos/7/isos/x86_64/">http://mirrors.aliyun.com/centos/7/isos/x86_64/</a><br>然后选择<br><img src="images/centos7_64.jpg" alt=""></p>
+<p>在vmware上最小安装或者即可，后面再装上图形界面。因为后面yum update步骤会导致图形界面显示不了  </p>
+<h4 id="系统设置"><a href="#系统设置" class="headerlink" title="系统设置"></a>系统设置</h4><p><strong>为了安装过程一切顺利，先关掉SELinux</strong>  </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/selinux/config</span><br><span class="line">将SELinux对应位置修改为</span><br><span class="line">SELinux=diabled</span><br></pre></td></tr></table></figure>
+
+<p><strong>然后关掉防火墙</strong></p>
+<p><code>systemctl disable firewalld</code></p>
+<p><strong>设置hostname</strong></p>
+<p>后面设置host结点的时候必须通过Engine所在服务器的FQDN来进行设置。这里手动打上<br><code>hostnamectl set-hostname engine.lian</code></p>
+<p>可以使用hostnamectl查看当前主机名称喝系统信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@engine vdsm]# hostnamectl</span><br><span class="line">   Static hostname: engine.lian</span><br><span class="line">         Icon name: computer-vm</span><br><span class="line">           Chassis: vm</span><br><span class="line">        Machine ID: 607207ea728149ff9c74754bc00bcc88</span><br><span class="line">           Boot ID: 291b316adffd4432aa812ebb4173a60d</span><br><span class="line">    Virtualization: vmware</span><br><span class="line">  Operating System: CentOS Linux 7 (Core)</span><br><span class="line">       CPE OS Name: cpe:/o:centos:centos:7</span><br><span class="line">            Kernel: Linux 3.10.0-1127.19.1.el7.x86_64</span><br><span class="line">      Architecture: x86-64</span><br></pre></td></tr></table></figure>
+
+<p><strong>然后重启系统</strong></p>
+<p><code>reboot</code></p>
+<h4 id="安装ovirt-engine管理后台"><a href="#安装ovirt-engine管理后台" class="headerlink" title="安装ovirt-engine管理后台"></a>安装ovirt-engine管理后台</h4><p><strong>修改yum源</strong></p>
+<p>centos7官方的yum源连接速度实在太慢，这里改为网易的yum源，需要将原来的源备份一下，防止以后用到</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">cd</span> /etc/yum.repos.d</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">mkdir</span> bak</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">mv</span> *.repo bak/</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">curl -o CentOS7-Base-163.repo http://mirrors.163.com/.help/CentOS7-Base-163.repo</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">yum clean all</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>在下载ovirt-engine之前，将ovirt官方的源添加到yum源库中</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">yum -y install http://resources.ovirt.org/pub/yum-repo/ovirt-release43.rpm</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">yum -y update</span></span><br></pre></td></tr></table></figure>
+
+<p>yum -y update这一步很重要，时间占用略长，需要耐心等待。否则后面安装 ovirt-engine 时将无法查询到 ovirt-engin的包。<br>这里我们选择4.3是因为，后面安装 ovirt-node 时下载 vdsm  的 4.3以下 版本的会与与SOS有冲突。所以直接下载4.3版本。</p>
+<p><strong>安装ovirt-engine</strong></p>
+<p><code># yum -y install ovirt-enine</code></p>
+<p>这一步由于依赖关系会到ovirt官方源获取。可能连接失败，需要多试几次。经过多次测试，只要将依赖关系下载下来。半小时之内都会下载下来。  </p>
+<p>这一步会安装大量的依赖的包大约351个。占用时间比较长。尤其是最后一个ovirt-engine-*的包需要从ovirt官方的源下载，速度比较慢。需耐心等待。<br>如果在下载完成后出现一下错误。  </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GPG key retrieval failed: [Errno 12] Timeout on https://raw.githubusercontent.com/CentOS-Storage-SIG/centos-release-storage-common/master/RPM-GPG-KEY-CentOS-SIG-Storage: (28,&amp;nbsp;’Connection timed out after 30001 milliseconds’)  </span><br></pre></td></tr></table></figure>
+
+<p>这是GPG key检测超时，将gpg检测关掉即可  </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/yum.repos.d/ovirt-4.3.repo</span><br><span class="line">vi /etc/yum.repos.d/ovirt-4.3-dependencies.repo</span><br></pre></td></tr></table></figure>
+
+<p>将gpgcheck设置为0</p>
+<p><code>gpgcheck = 0</code></p>
+<h4 id="配置ovirt-engine"><a href="#配置ovirt-engine" class="headerlink" title="配置ovirt-engine"></a>配置ovirt-engine</h4><p>ovirt-engine安装完成需要运行首次配置向导  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br></pre></td><td class="code"><pre><span class="line">[root@engine ~]# engine-setup</span><br><span class="line">[ INFO  ] Stage: Initializing</span><br><span class="line">[ INFO  ] Stage: Environment setup</span><br><span class="line">          Configuration files: [&#x27;/etc/ovirt-engine-setup.conf.d/10-packaging-jboss.conf&#x27;, &#x27;/etc/ovirt-engine-setup.conf.d/10-packaging.conf&#x27;]</span><br><span class="line">          Log file: /var/log/ovirt-engine/setup/ovirt-engine-setup-20200831091209-oo7toy.log</span><br><span class="line">          Version: otopi-1.8.4 (otopi-1.8.4-1.el7)</span><br><span class="line">[ INFO  ] Stage: Environment packages setup</span><br><span class="line">[ INFO  ] Stage: Programs detection</span><br><span class="line">[ INFO  ] Stage: Environment setup (late)</span><br><span class="line">[ INFO  ] Stage: Environment customization</span><br><span class="line">         </span><br><span class="line">          --== PRODUCT OPTIONS ==--</span><br><span class="line">         </span><br><span class="line">          Set up Cinderlib integration</span><br><span class="line">          (Currently in tech preview)</span><br><span class="line">          (Yes, No) [No]: 回车</span><br><span class="line">          Configure Engine on this host (Yes, No) [Yes]: 回车</span><br><span class="line">          Configure ovirt-provider-ovn (Yes, No) [Yes]: 回车(OVN:Open Virtual Network,配置虚拟化网络)</span><br><span class="line">          Configure WebSocket Proxy on this host (Yes, No) [Yes]:回车(WebSocket Proxy用来支持使用noVNC远程登录虚拟机图形界面管理)</span><br><span class="line">          * Please note * : Data Warehouse is required for the engine.</span><br><span class="line">          If you choose to not configure it on this host, you have to configure</span><br><span class="line">          it on a remote host, and then configure the engine on this host so</span><br><span class="line">          that it can access the database of the remote Data Warehouse host.</span><br><span class="line">          Configure Data Warehouse on this host (Yes, No) [Yes]: 回车(在本机配置数据库)</span><br><span class="line">          Configure Image I/O Proxy on this host (Yes, No) [Yes]: 回车(Image I/O Proxy可以支持向oVirt平台中上传虚拟机的磁盘镜像)</span><br><span class="line">          Configure VM Console Proxy on this host (Yes, No) [Yes]: 回车(支持访问虚拟机的串口console通信)</span><br><span class="line">         </span><br><span class="line">          --== PACKAGES ==--</span><br><span class="line">         </span><br><span class="line">[ INFO  ] Checking for product updates...</span><br><span class="line">[ INFO  ] No product updates found</span><br><span class="line">         </span><br><span class="line">          --== NETWORK CONFIGURATION ==--</span><br><span class="line">         </span><br><span class="line">          Host fully qualified DNS name of this server [engine.lian]: 回车(使用默认hostname就行,反正是准备用IP地址访问无所谓)</span><br><span class="line">[WARNING] Failed to resolve engine.lian using DNS, it can be resolved only locally</span><br><span class="line">          Setup can automatically configure the firewall on this system.</span><br><span class="line">          Note: automatic configuration of the firewall may overwrite current settings.</span><br><span class="line">          NOTICE: iptables is deprecated and will be removed in future releases</span><br><span class="line">          Do you want Setup to configure the firewall? (Yes, No) [Yes]: no回车(因为之前已经把防火墙服务给关掉了,所以就不用再配置防火墙的具体设置了)</span><br><span class="line">         </span><br><span class="line">          --== DATABASE CONFIGURATION ==--</span><br><span class="line">         </span><br><span class="line">          Where is the DWH database located? (Local, Remote) [Local]: 回车(DWH:Data WareHouse使用本地数据库)</span><br><span class="line">          Setup can configure the local postgresql server automatically for the DWH to run. This may conflict with existing applications.</span><br><span class="line">          Would you like Setup to automatically configure postgresql and create DWH database, or prefer to perform that manually? (Automatic, Manual) [Automatic]: 回车(自动配置PostGreSQL数据库)</span><br><span class="line">          Where is the ovirt cinderlib database located? (Local, Remote) [Local]: </span><br><span class="line">          Setup can configure the local postgresql server automatically for the CinderLib to run. This may conflict with existing applications.</span><br><span class="line">          Would you like Setup to automatically configure postgresql and create CinderLib database, or prefer to perform that manually? (Automatic, Manual) [Automatic]: 回车(自动配置PostGreSQL数据库)</span><br><span class="line">          Where is the Engine database located? (Local, Remote) [Local]: 回车(Engine用到的数据库位于本机)</span><br><span class="line">          Setup can configure the local postgresql server automatically for the engine to run. This may conflict with existing applications.</span><br><span class="line">          Would you like Setup to automatically configure postgresql and create Engine database, or prefer to perform that manually? (Automatic, Manual) [Automatic]: 回车(使用安装程序自动创建Engine数据库)</span><br><span class="line">         </span><br><span class="line">          --== OVIRT ENGINE CONFIGURATION ==--</span><br><span class="line">         </span><br><span class="line">          Engine admin password: 输入后台管理员密码回车</span><br><span class="line">          Confirm engine admin password: 再次输入密码回车</span><br><span class="line">[WARNING] Password is weak: The password is shorter than 8 characters</span><br><span class="line">          Use weak password? (Yes, No) [No]: yes（密码太弱才会有的选项，如果有输入yes回车）</span><br><span class="line">          Application mode (Virt, Gluster, Both) [Both]: 回车</span><br><span class="line">         </span><br><span class="line">          --== STORAGE CONFIGURATION ==--</span><br><span class="line">         </span><br><span class="line">          Default SAN wipe after delete (Yes, No) [No]: 回车(yes的话在删除虚拟机的虚拟磁盘后会擦除存储设备上的对应块)</span><br><span class="line">         </span><br><span class="line">          --== PKI CONFIGURATION ==--</span><br><span class="line">         </span><br><span class="line">          Organization name for certificate [lian]: 回车</span><br><span class="line">         </span><br><span class="line">          --== APACHE CONFIGURATION ==--</span><br><span class="line">         </span><br><span class="line">          Setup can configure the default page of the web server to present the application home page. This may conflict with existing applications.</span><br><span class="line">          Do you wish to set the application as the default page of the web server? (Yes, No) [Yes]: 回车(使用apache作为web服务器)</span><br><span class="line">          Setup can configure apache to use SSL using a certificate issued from the internal CA.</span><br><span class="line">          Do you wish Setup to configure that, or prefer to perform that manually? (Automatic, Manual) [Automatic]: 回车(自动配置CA证书)</span><br><span class="line">         </span><br><span class="line">          --== SYSTEM CONFIGURATION ==--</span><br><span class="line">         </span><br><span class="line">         </span><br><span class="line">          --== MISC CONFIGURATION ==--</span><br><span class="line">         </span><br><span class="line">          Please choose Data Warehouse sampling scale:</span><br><span class="line">          (1) Basic</span><br><span class="line">          (2) Full</span><br><span class="line">          (1, 2)[1]: 回车(使用基本的数据库示例初始化数据)</span><br><span class="line">         </span><br><span class="line">          --== END OF CONFIGURATION ==--</span><br><span class="line">         </span><br><span class="line">[ INFO  ] Stage: Setup validation</span><br><span class="line">[WARNING] Warning: Not enough memory is available on the host. Minimum requirement is 4096MB, and 16384MB is recommended.</span><br><span class="line">          Do you want Setup to continue, with amount of memory less than recommended? (Yes, No) [No]: yes回车(因为在虚拟机上装，内存过小才会有的提示。我们要输入yes)</span><br><span class="line">         </span><br><span class="line">          --== CONFIGURATION PREVIEW ==--</span><br><span class="line">         </span><br><span class="line">          Application mode                        : both</span><br><span class="line">          Default SAN wipe after delete           : False</span><br><span class="line">          Update Firewall                         : False</span><br><span class="line">          Host FQDN                               : engine.lian</span><br><span class="line">          CinderLib database secured connection   : False</span><br><span class="line">          CinderLib database user name            : ovirt_cinderlib</span><br><span class="line">          CinderLib database name                 : ovirt_cinderlib</span><br><span class="line">          CinderLib database host                 : localhost</span><br><span class="line">          CinderLib database port                 : 5432</span><br><span class="line">          CinderLib database host name validation : False</span><br><span class="line">          Set up Cinderlib integration            : True</span><br><span class="line">          Configure local CinderLib database      : True</span><br><span class="line">          Configure local Engine database         : True</span><br><span class="line">          Set application as default page         : True</span><br><span class="line">          Configure Apache SSL                    : True</span><br><span class="line">          Engine database secured connection      : False</span><br><span class="line">          Engine database user name               : engine</span><br><span class="line">          Engine database name                    : engine</span><br><span class="line">          Engine database host                    : localhost</span><br><span class="line">          Engine database port                    : 5432</span><br><span class="line">          Engine database host name validation    : False</span><br><span class="line">          Engine installation                     : True</span><br><span class="line">          PKI organization                        : lian</span><br><span class="line">          Set up ovirt-provider-ovn               : False</span><br><span class="line">          Configure WebSocket Proxy               : True</span><br><span class="line">          DWH installation                        : True</span><br><span class="line">          DWH database host                       : localhost</span><br><span class="line">          DWH database port                       : 5432</span><br><span class="line">          Configure local DWH database            : True</span><br><span class="line">          Configure Image I/O Proxy               : True</span><br><span class="line">          Configure VMConsole Proxy               : True</span><br><span class="line">         </span><br><span class="line">          Please confirm installation settings (OK, Cancel) [OK]: 回车</span><br><span class="line">[ INFO  ] Stage: Transaction setup</span><br><span class="line">[ INFO  ] Stopping engine service</span><br><span class="line">[ INFO  ] Stopping ovirt-fence-kdump-listener service</span><br><span class="line">[ INFO  ] Stopping dwh service</span><br><span class="line">[ INFO  ] Stopping Image I/O Proxy service</span><br><span class="line">[ INFO  ] Stopping vmconsole-proxy service</span><br><span class="line">[ INFO  ] Stopping websocket-proxy service</span><br><span class="line">[ INFO  ] Stage: Misc configuration (early)</span><br><span class="line">[ INFO  ] Stage: Package installation</span><br><span class="line">[ INFO  ] Stage: Misc configuration</span><br><span class="line">[ INFO  ] Initializing PostgreSQL</span><br><span class="line">[ INFO  ] Creating PostgreSQL &#x27;ovirt_cinderlib&#x27; database</span><br><span class="line">[ INFO  ] Configuring PostgreSQL</span><br><span class="line">[ INFO  ] Upgrading CA</span><br><span class="line">[ INFO  ] Creating PostgreSQL &#x27;engine&#x27; database</span><br><span class="line">[ INFO  ] Configuring PostgreSQL</span><br><span class="line">[ INFO  ] Creating PostgreSQL &#x27;ovirt_engine_history&#x27; database</span><br><span class="line">[ INFO  ] Configuring PostgreSQL</span><br><span class="line">[ INFO  ] Creating CA</span><br><span class="line">[ INFO  ] Creating/refreshing DWH database schema</span><br><span class="line">[ INFO  ] Configuring Image I/O Proxy</span><br><span class="line">[ INFO  ] Setting up ovirt-vmconsole proxy helper PKI artifacts</span><br><span class="line">[ INFO  ] Setting up ovirt-vmconsole SSH PKI artifacts</span><br><span class="line">[ INFO  ] Configuring WebSocket Proxy</span><br><span class="line">[ INFO  ] Creating/refreshing Engine database schema</span><br><span class="line">[ INFO  ] Creating/refreshing Engine &#x27;internal&#x27; domain database schema</span><br><span class="line">[ INFO  ] Creating default mac pool range</span><br><span class="line">[ INFO  ] Setting a password for internal user admin</span><br><span class="line">[ INFO  ] Generating post install configuration file &#x27;/etc/ovirt-engine-setup.conf.d/20-setup-ovirt-post.conf&#x27;</span><br><span class="line">[ INFO  ] Stage: Transaction commit</span><br><span class="line">[ INFO  ] Stage: Closing up</span><br><span class="line">[ INFO  ] Starting engine service</span><br><span class="line">[ INFO  ] Starting dwh service</span><br><span class="line">[ INFO  ] Restarting ovirt-vmconsole proxy service</span><br><span class="line">         </span><br><span class="line">          --== SUMMARY ==--</span><br><span class="line">         </span><br><span class="line">[ INFO  ] Restarting httpd</span><br><span class="line">          In order to configure firewalld, copy the files from</span><br><span class="line">              /etc/ovirt-engine/firewalld to /etc/firewalld/services</span><br><span class="line">              and execute the following commands:</span><br><span class="line">              firewall-cmd --permanent --add-service ovirt-postgres</span><br><span class="line">              firewall-cmd --permanent --add-service ovirt-https</span><br><span class="line">              firewall-cmd --permanent --add-service ovirt-fence-kdump-listener</span><br><span class="line">              firewall-cmd --permanent --add-service ovirt-imageio-proxy</span><br><span class="line">              firewall-cmd --permanent --add-service ovirt-websocket-proxy</span><br><span class="line">              firewall-cmd --permanent --add-service ovirt-http</span><br><span class="line">              firewall-cmd --permanent --add-service ovirt-vmconsole-proxy</span><br><span class="line">              firewall-cmd --reload</span><br><span class="line">          The following network ports should be opened:</span><br><span class="line">              tcp:2222</span><br><span class="line">              tcp:443</span><br><span class="line">              tcp:5432</span><br><span class="line">              tcp:54323</span><br><span class="line">              tcp:6100</span><br><span class="line">              tcp:80</span><br><span class="line">              udp:7410</span><br><span class="line">          An example of the required configuration for iptables can be found at:</span><br><span class="line">              /etc/ovirt-engine/iptables.example</span><br><span class="line">          Please use the user &#x27;admin@internal&#x27; and password specified in order to login</span><br><span class="line">          Web access is enabled at:</span><br><span class="line">              http://engine.lian:80/ovirt-engine</span><br><span class="line">              https://engine.lian:443/ovirt-engine</span><br><span class="line">          Internal CA C3:CE:5F:1C:AB:52:AC:0A:F5:AA:D1:A2:86:5A:3D:25:CC:CF:81:7E</span><br><span class="line">          SSH fingerprint: SHA256:fyQ+cLuByiqbFG6f/I/Ukid4yv3IwzrYJFUX0MpiwCg</span><br><span class="line">[WARNING] Warning: Not enough memory is available on the host. Minimum requirement is 4096MB, and 16384MB is recommended.</span><br><span class="line">         </span><br><span class="line">          --== END OF SUMMARY ==--</span><br><span class="line">         </span><br><span class="line">[ INFO  ] Stage: Clean up</span><br><span class="line">          Log file is located at /var/log/ovirt-engine/setup/ovirt-engine-setup-20200831091209-oo7toy.log</span><br><span class="line">[ INFO  ] Generating answer file &#x27;/var/lib/ovirt-engine/setup/answers/20200831092223-setup.conf&#x27;</span><br><span class="line">[ INFO  ] Stage: Pre-termination</span><br><span class="line">[ INFO  ] Stage: Termination</span><br><span class="line">[ INFO  ] Execution of setup completed successfully</span><br></pre></td></tr></table></figure>
+
+<p>至此，在本机上安装ovirt完毕，但是如果在另一台电脑上访问服务器ip地址，会提示<br>“The FQDN used to access the system is not a valid engine FQDN. You must access the system using the engine FQDN or one of the engine alternate FQDNs.”</p>
+<p><img src="images/ovirt-engine.png" alt=""></p>
+<p><strong>想要让其他电脑可以正常访问服务器ip，需要修改配置文件配置文件</strong></p>
+<p><code>vim /etc/ovirt-engine/engine.conf.d/*-sso.conf</code></p>
+<p>写入内容</p>
+<p><code>SSO_CALLBACK_PREFIX_CHECK=false</code></p>
+<p>然后重启 ovirt-engine服务</p>
+<p><code>service ovir-engine restart</code></p>
+<p>再次访问，错误提示消失，至此，搭建完成。</p>
+<p><img src="images/ovirt%E4%B8%BB%E9%A1%B5.png" alt=""></p>
+<p>完！</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ovirt/" rel="tag"># ovirt</a>
+              <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" rel="tag"># 虚拟化</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/21/rpm%E6%9F%A5%E6%89%BE%E6%BA%90%E7%A0%81%E5%8C%85%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B/" rel="prev" title="rpm查找源码包的基本流程">
+      <i class="fa fa-chevron-left"></i> rpm查找源码包的基本流程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/04/linux%E5%B7%A5%E4%BD%9C%E5%8C%BAbug%E8%A7%A3%E5%86%B3%E6%B5%81%E7%A8%8B/" rel="next" title=" linux工作区bug解决流程">
+       linux工作区bug解决流程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">系统安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">系统设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85ovirt-engine%E7%AE%A1%E7%90%86%E5%90%8E%E5%8F%B0"><span class="nav-number">3.</span> <span class="nav-text">安装ovirt-engine管理后台</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEovirt-engine"><span class="nav-number">4.</span> <span class="nav-text">配置ovirt-engine</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="warren"
+      src="/images/logo.jpg">
+  <p class="site-author-name" itemprop="name">warren</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">warren</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v7.1.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.css">
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

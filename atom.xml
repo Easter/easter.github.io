@@ -6,7 +6,7 @@
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2023-03-21T07:23:27.766Z</updated>
+  <updated>2025-12-12T08:20:37.196Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>读书笔记-代码整洁之道-专业注意-1</title>
+    <link href="http://yoursite.com/2025/12/12/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93-1%EF%BC%88%E4%B8%93%E4%B8%9A%E4%B8%BB%E4%B9%89%EF%BC%89/"/>
+    <id>http://yoursite.com/2025/12/12/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93-1%EF%BC%88%E4%B8%93%E4%B8%9A%E4%B8%BB%E4%B9%89%EF%BC%89/</id>
+    <published>2025-12-12T06:35:57.000Z</published>
+    <updated>2025-12-12T08:20:37.196Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>代码整洁之道是每个程序员必读的一本书，从今天开始更新代码整洁之道的读书笔记</p></blockquote><h2 id="专业主义"><a href="#专业主义" class="headerlink" title="专业主义"></a>专业主义</h2>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;代码整洁之道是每个程序员必读的一本书，从今天开始更新代码整洁之道的读书笔记&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;专业主义&quot;&gt;&lt;a href=&quot;#专业主义&quot; class=&quot;headerlink&quot; title=&quot;专业主义&quot;&gt;&lt;/a&gt;专业</summary>
+      
+    
+    
+    
+    <category term="读书笔记" scheme="http://yoursite.com/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+    
+    <category term="代码整洁之道" scheme="http://yoursite.com/tags/%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93/"/>
+    
+  </entry>
   
   <entry>
     <title>kubesphere搭建流程</title>

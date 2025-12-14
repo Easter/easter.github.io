@@ -6,7 +6,7 @@
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2025-12-12T08:20:37.196Z</updated>
+  <updated>2025-12-14T15:20:49.441Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -17,22 +17,18 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>读书笔记-代码整洁之道-专业注意-1</title>
+    <title>读书笔记-代码整洁之道（程序员的职业素养）</title>
     <link href="http://yoursite.com/2025/12/12/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93-1%EF%BC%88%E4%B8%93%E4%B8%9A%E4%B8%BB%E4%B9%89%EF%BC%89/"/>
     <id>http://yoursite.com/2025/12/12/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93-1%EF%BC%88%E4%B8%93%E4%B8%9A%E4%B8%BB%E4%B9%89%EF%BC%89/</id>
     <published>2025-12-12T06:35:57.000Z</published>
-    <updated>2025-12-12T08:20:37.196Z</updated>
+    <updated>2025-12-14T15:20:49.441Z</updated>
     
-    <content type="html"><![CDATA[<blockquote><p>代码整洁之道是每个程序员必读的一本书，从今天开始更新代码整洁之道的读书笔记</p></blockquote><h2 id="专业主义"><a href="#专业主义" class="headerlink" title="专业主义"></a>专业主义</h2>]]></content>
+    <content type="html"><![CDATA[<blockquote><p>代码整洁之道（程序员的职业素养）是每个程序员必读的一本书，这本书虽然没有讲关于编码方式（在子妹篇，代码整洁之道里有写）的内容，但是就职业素养，也就是专业的程序员应该如何做事方面，作者结合自己的的工作经历，给出了一些见解，值得我们学习。</p></blockquote><span id="more"></span><h2 id="1-专业主义"><a href="#1-专业主义" class="headerlink" title="1. 专业主义"></a>1. 专业主义</h2><p>成为一个优秀的人应该拥有的品质</p><ul><li>担当责任</li><li>不行损坏之事<ul><li>不破坏软件功能</li><li>不要破坏结构</li></ul></li><li>职业道德<ul><li>了解自己所处的领域</li><li>坚持学习</li><li>练习</li><li>合作</li><li>辅导</li><li>了解业务领域</li><li>与雇主/客户保持一致</li><li>谦逊<h2 id="说“不”"><a href="#说“不”" class="headerlink" title="说“不”"></a>说“不”</h2><blockquote><p>能就是能，不能就是不能，不要说“试试看”</p></blockquote><h4 id="对抗角色"><a href="#对抗角色" class="headerlink" title="对抗角色"></a>对抗角色</h4>面对不合理deadline，不要说，“试试看”，因为上级会讲“试试看”理解成“好的，没问题”。如果上级听到了”试试看”这类的话，也应该进行进一步确认，确认这个“试试看”是不是能够确信能在规定时间内解决问题。</li></ul></li></ul><p>正确的做法是，达成最佳的可能结果，双方各表异议相互说“不”，然后找到双方都能接受的解决方案。工作中不可能避免任何冲突，完全详细也不见得是好事。</p><h4 id="高风险时刻"><a href="#高风险时刻" class="headerlink" title="高风险时刻"></a>高风险时刻</h4><p>越是高风险时刻，越要把自己已经的信息和风险暴露出来，然后重新评估预期，当然，作为上级，同样也要在知悉新的预估结果时，向业务方说明情况，而不是拖的更久。</p><h4 id="要有团队精神"><a href="#要有团队精神" class="headerlink" title="要有团队精神"></a>要有团队精神</h4><p>作为小组长，应该倾听员工的合理要求，比如，员工明确说明，哪些是能做到的，哪些是做不到的，小组长应该和员工站在一起，向上明确说“不”。</p><h4 id="不要说“试试看”"><a href="#不要说“试试看”" class="headerlink" title="不要说“试试看”"></a>不要说“试试看”</h4><p>“试试看”，意味着承认之前没有竭尽全力，只要在加把劲还是可以达成目标的，因此许诺“尝试”，实际上是在承诺确保成功，压力就需要你来抗了。如果没有达到预期的效果，那么就表示你失败了。所以，在关键时刻，不要说“试试看”。实际上，在这种情况下，领导需要降低自己预期，并且向上反馈风险。</p><h4 id="消极对抗"><a href="#消极对抗" class="headerlink" title="消极对抗"></a>消极对抗</h4><p>假设员工的预估结果，小组长没有告知上级，而员工仍按照自己的计划推进，那么这就是消极对抗，正确的做法是员工应该直接和上级沟通，来阻止灾难的发生。</p><h2 id="说“是“"><a href="#说“是“" class="headerlink" title="说“是“"></a>说“是“</h2><h4 id="承诺用语"><a href="#承诺用语" class="headerlink" title="承诺用语"></a>承诺用语</h4><p>做出承诺，包含三个步骤</p><ul><li>口头上说自己会去做</li><li>心里认真对待做出的承诺</li><li>真正付诸行动<h4 id="识别”缺乏承诺“的征兆"><a href="#识别”缺乏承诺“的征兆" class="headerlink" title="识别”缺乏承诺“的征兆"></a>识别”缺乏承诺“的征兆</h4>包含以下几个用此和短语的，会表名”缺乏承诺“，需要注意</li><li>需要/应当</li><li>希望/但愿</li><li>让我们<h4 id="真正的承诺听起来是什么样子的"><a href="#真正的承诺听起来是什么样子的" class="headerlink" title="真正的承诺听起来是什么样子的"></a>真正的承诺听起来是什么样子的</h4>我将在…之前…<br>对自己将会做某件事做了清晰的事实陈述。需要为自己做出的承诺付出责任。但是就算给出承诺，也会有完成不了的时候，可能是依赖别人，也可能是有一些点没有考虑到，也可能是不太确信自己是否真的能完成<h5 id="依赖别人"><a href="#依赖别人" class="headerlink" title="依赖别人"></a>依赖别人</h5>采取行动，和依赖的人进行沟通<h5 id="为考虑周全"><a href="#为考虑周全" class="headerlink" title="为考虑周全"></a>为考虑周全</h5>重新调整别人是你的预期，越快越好<h5 id="不太确定自己是否能完成"><a href="#不太确定自己是否能完成" class="headerlink" title="不太确定自己是否能完成"></a>不太确定自己是否能完成</h5>全力前进，离目标更近，当然也要提前告知风险</li></ul><p><strong>做出承诺或许让人听着很害怕，但是如果一直信守承诺，热家会认为你是一个靠谱的人</strong></p><p>不需要对所有请求都回答“是”，不过，应该努力寻找解决问题的方案，尽可能做到有求必应。</p><h2 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h2><p>这章标题虽然叫编码，但是作者讲的是编码时的心里，精神和情绪。</p>]]></content>
     
     
-      
-      
     <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;代码整洁之道是每个程序员必读的一本书，从今天开始更新代码整洁之道的读书笔记&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h2 id=&quot;专业主义&quot;&gt;&lt;a href=&quot;#专业主义&quot; class=&quot;headerlink&quot; title=&quot;专业主义&quot;&gt;&lt;/a&gt;专业</summary>
-      
+&lt;p&gt;代码整洁之道（程序员的职业素养）是每个程序员必读的一本书，这本书虽然没有讲关于编码方式（在子妹篇，代码整洁之道里有写）的内容，但是就职业素养，也就是专业的程序员应该如何做事方面，作者结合自己的的工作经历，给出了一些见解，值得我们学习。&lt;/p&gt;
+&lt;/blockquote&gt;</summary>
     
     
     
